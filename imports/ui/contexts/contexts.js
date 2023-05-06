@@ -1,4 +1,4 @@
-import { Contexts } from '../../api/contexts/collections.js';
+import { PrimaryContexts } from '../../api/primary-contexts/collections.js';
 import Sortable from 'sortablejs/modular/sortable.complete.esm.js';
 
 import { exportCollection } from '../../api/helpers.js';
@@ -6,7 +6,7 @@ import { exportCollection } from '../../api/helpers.js';
 import './contexts.html';
 
 Template.contexts.onCreated(function () {
-  this.subscribe('contexts');
+  this.subscribe('primary_contexts');
 });
 
 Template.contexts.onRendered(function () {
@@ -24,7 +24,7 @@ Template.contexts.onRendered(function () {
 
 Template.contexts.helpers({
   contexts() {
-    return Contexts.find({}, { sort: { priority: 1 } });
+    return PrimaryContexts.find({contextId: Session.get('contextId')}, { sort: { priority: 1 } });
   },
 });
 
@@ -41,7 +41,7 @@ Template.contexts.events({
 
     if (context.text === '') return;
 
-    Meteor.call('addContext', context, (err, res) => {
+    Meteor.call('addPrimaryContext', context, Session.get('contextId'), (err, res) => {
       if (err) {
         alert(err);
       } else {
@@ -51,10 +51,6 @@ Template.contexts.events({
     });
   },
 
-	'click .js-export-contexts'(event, instance) {
-		event.preventDefault();
-		exportCollection(Contexts);
-	},
 });
 
 Template.context.helpers({

@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import { Contexts } from '../imports/api/contexts/collections.js';
 
 import '../imports/ui/helpers.js';
 
@@ -47,7 +48,7 @@ Template.home.events({
       'Use this format: "[original_task_number] [max 4 words summary of the task]: [justification]".\n' +
       'Give maximum 3 priority items. The justification for each of them can be of any length.\n';
     Meteor.call('addChat', 'user', prompt);
-    Meteor.call('openaiGenerateText', '', prompt, (err, res) => {
+    Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
       if (err) Meteor.call('addChat', 'meta', err.message);
       else Meteor.call('addChat', 'assistant', res);
     });
@@ -59,4 +60,30 @@ Template.usageStats.onRendered(function () {
     console.log('method', res);
     Session.set('usageStats', res);
   });
+});
+
+
+Template.contextSelect.onCreated(function () {
+  this.subscribe('contexts');
+});
+
+Template.contextSelect.helpers({
+  contexts() {
+    return Contexts.find({}, { sort: { createdAt: 1 } });
+  },
+});
+
+Template.contextSelect.events({
+  'change [name=context-select]'(event, instance) {
+    event.preventDefault();
+    const contextId = event.target.value;
+    if(!contextId) return;
+
+    if(contextId === 'new') {
+      const name = prompt('Enter a name for the new context:', '');
+      Meteor.call('addContext', name);
+      return;
+    }
+    Session.set('contextId', contextId);
+  }
 });
