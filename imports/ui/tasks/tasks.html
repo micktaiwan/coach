@@ -1,0 +1,32 @@
+<template name="tasks">
+  <h2>Tasks
+    <button class="js-export-tasks btn btn-primary">Export</button>
+  </h2>
+
+  <input type="text" name="search" placeholder="Search tasks" id="search-input">
+
+  <ul id="tasks">
+    {{#each tasks}}
+    {{> task}}
+    {{/each}}
+  </ul>
+
+  <form id="task-form">
+    <input size="100" type="text" name="text" placeholder="Type to add new tasks" />
+    <button class="js-add-task btn btn-primary">Add Task</button>
+  </form>
+
+</template>
+
+<template name="task">
+  <li data-id="{{_id}}" class="task">
+    P{{priority}}.
+    <span contenteditable="true" class="text {{taskClass}} js-edit-task">{{text}}</span>
+    <button class="js-translate-task">Translate</button>
+    <button class="js-plan">Plan</button>
+    <button class="js-inprogress btn btn-warning">In progress</button>
+    <button class="js-done btn btn-success">Done</button>
+    <button class="js-delete-task btn btn-danger">Delete</button>
+    <span class="date">{{date}}</span>
+  </li>
+</template>

@@ -1,0 +1,22 @@
+<template name="chats">
+  <div class="chats">
+    {{#each chats}}
+      {{> chat}}
+    {{/each}}
+  
+    <form id="chat-form">
+      <input type="text" name="message" placeholder="Type to send new message" />
+      <button class="js-send-message">Send</button>
+    </form>
+
+  </div>
+</template>
+
+<template name="chat">
+  <div class="chat {{role}}">
+    <div class="role">{{role}}</div>
+    <div class="message">{{{content}}}</div>
+    <div class="date">{{date}}</div>
+    <div class="delete"><button class="js-delete-chat btn btn-danger"><i class="fa fa-trash"></i></button></div>
+  </div>
+</template>
