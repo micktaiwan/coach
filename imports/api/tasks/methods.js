@@ -2,17 +2,19 @@ import { Tasks } from './collections.js';
 import _ from 'underscore';
 
 Meteor.methods({
-  'addTask': function(task) {
+  'addTask': function(task, contextId) {
     check(task, Object);
     check(task.text, String);
+    check(contextId, String);
 
     // Add the task to the Tasks collection
     Tasks.insert({
       userId: this.userId,
+      contextId: contextId,
       text: task.text,
       createdAt: new Date(),
       status: 'open',
-      priority: task.priority || Tasks.find().count(),
+      priority: task.priority || Tasks.find({contextId: contextId}).count(),
       ..._.omit(task, ['text', 'priority'])
     });
   },

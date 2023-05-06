@@ -5,6 +5,11 @@ import '../imports/api/tasks/methods.js';
 import '../imports/api/tasks/publish.js';
 import '../imports/api/tasks/collections.js';
 
+// primary contexts
+import '../imports/api/primary-contexts/methods.js';
+import '../imports/api/primary-contexts/publish.js';
+import '../imports/api/primary-contexts/collections.js';
+
 // contexts
 import '../imports/api/contexts/methods.js';
 import '../imports/api/contexts/publish.js';
@@ -24,6 +29,5 @@ import '../imports/api/open-ai/methods.js';
 Meteor.startup(() => {
   // code to run on server at startup
 
-  // put a 'open' status to Tasks that don't have a status
-  //Tasks.update({ status: { $exists: false } }, { $set: { status: 'open' } }, { multi: true });
 });
+

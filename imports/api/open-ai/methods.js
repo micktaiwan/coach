@@ -1,12 +1,13 @@
 import { Tasks } from '../tasks/collections.js';
-import { Contexts } from '../contexts/collections.js';
+import { PrimaryContexts } from '../primary-contexts/collections.js';
 import { Chats } from '../chats/collections.js';
 import _ from 'underscore';
 
 export const UsageStats = new Mongo.Collection('usage_stats');
 
-function getSystem() {
-	const list = Tasks.find({}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority + 1) + '] ' +
+function getSystem(contextId) {
+	console.log(Tasks.find({contextId}).fetch());
+	const list = Tasks.find({contextId}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority + 1) + '] ' +
 	task.text +
 	' [status: ' + task.status + ']' +
 	' [createdAt: ' + task.createdAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' +
@@ -18,36 +19,35 @@ function getSystem() {
 	const today = new Date();
 	const todayAsString = today.toLocaleDateString(undefined, options);
 
-	const context = '"' + Contexts.find({}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority + 1) + '] ' +
+	const context = '"' + PrimaryContexts.find({contextId}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority + 1) + '] ' +
 	task.text).join(", ") + '"';
 
 	const system = 'Act as a coach. You have 30+ years of experience.\n' +
 	'Today is ' + todayAsString + '.\n' +
-	'When asked something, assume that it is your client speaking.\n' +
-	'So any first person pronoun is your client speaking about himself.\n' +
+	'Assume that the user is your client.\n' +
+	'Any first person pronoun is your client speaking about himself.\n' +
 	'This is all the context your client gave you:\n' +
 	context + '[end of context]\n' +
 	'This context is very important and must be taken into account for each reply you provide to your client.\n' +
-	'When replying, you can be verbose and justify your answer based on your experience and your client given context.\n' +
 	'This is the list of your client current tasks:"' + list + '"\n';
-
 	return system;
 }
 
 
 Meteor.methods({
 
-	openaiGenerateText(system, prompt) {
+	openaiGenerateText(contextId, system, prompt) {
 		check(system, String);
 		check(prompt, String);
 
-		if(system === '') system = getSystem();
+		const apiUrl = 'https://api.openai.com/v1/chat/completions';
+		const apiKey = Meteor.user()?.openAI.apiKey;		
+		if(!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
+
+		if(system === '') system = getSystem(contextId);
 
 		console.log('system:', system);
 		console.log('prompt:', prompt);
-
-		const apiUrl = 'https://api.openai.com/v1/chat/completions';
-		const apiKey = Meteor.user()?.openAI.apiKey;		
 
 		const pastChats = Chats.find({}, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
 		const messages = [
@@ -86,7 +86,6 @@ Meteor.methods({
 	},
 
 	getUsageStats() {
-		console.log(UsageStats.findOne({}, { sort: { createdAt: -1 } }));
 		return UsageStats.findOne({}, { sort: { createdAt: -1 } });
 	}
 });

@@ -1,7 +1,5 @@
 import { Tasks } from '../../api/tasks/collections.js';
-import { Contexts } from '../../api/contexts/collections.js';
 import Sortable from 'sortablejs/modular/sortable.complete.esm.js';
-import { exportCollection } from '../../api/helpers.js';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 import './tasks.html';
@@ -29,7 +27,8 @@ Template.tasks.helpers({
 		const instance = Template.instance();
     const searchQuery = instance.searchQuery.get();
 
-    const query = searchQuery ? {text: {$regex: searchQuery, $options: 'i'}} : {};
+		const commmon = {contextId: Session.get('contextId')};
+    const query = searchQuery ? {text: {$regex: searchQuery, $options: 'i'}, ...commmon} : commmon;
 
     return Tasks.find(query, { sort: { status: -1, priority: 1 } });
   }
@@ -48,7 +47,7 @@ Template.tasks.events({
 		
 		if(task.text === "") return;
 
-    Meteor.call('addTask', task, (err, res) => {
+    Meteor.call('addTask', task, Session.get('contextId'), (err, res) => {
       if (err) {
         alert(err);
       } else {
@@ -64,15 +63,10 @@ Template.tasks.events({
 		const ta = document.getElementById('reply');
 		ta.textContent = 'Loading...';
 		const prompt = question;
-		Meteor.call('openaiGenerateText', '', prompt, (err, res) => {
+		Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
 			if(err) ta.textContent = err;
 			else ta.textContent = res;
 		});
-	},
-
-	'click .js-export-tasks'(event, instance) {
-		event.preventDefault();
-		exportCollection(Tasks);
 	},
 
 	'input #search-input': function(event, instance) {
@@ -125,19 +119,18 @@ Template.task.events({
 	'click .js-plan'(event, instance) {
 		event.preventDefault();
 		const prompt = 'Suggest a step by step plan for this task: "' + this.text;
-		Meteor.call('openaiGenerateText', '', prompt, (err, res) => {
+		Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
 			if(err) console.error(err);
 			else Meteor.call('addTask', { text: res, priority: this.priority, generated: true });
 		});
 	},
-
 
 	'click .js-translate-task'(event, instance) {
 		event.preventDefault();
 		const task = this;
 		const system = 'Act as a professional english translator.\n';
 		const prompt = ' Translate in english, close to the original text. If something is not clear, leave it as it is. Do not output quotes in your answer. Do not comment your translation, just output the translation alone. Text to translate: ' + task.text;
-		Meteor.call('openaiGenerateText', system, prompt, (err, res) => {
+		Meteor.call('openaiGenerateText', Session.get('contextId'), system, prompt, (err, res) => {
 			if(err) console.error(err);
 			else Meteor.call('editTaskText', task._id, res);
 		});

@@ -22,7 +22,7 @@ Template.chats.events({
     Meteor.call('addChat', 'user', message, (err, res) => {
       if (err) Meteor.call('addChat', 'meta', err.message);
       else {
-        Meteor.call('openaiGenerateText', '', message, (err, res) => {
+        Meteor.call('openaiGenerateText', Session.get('contextId'), '', message, (err, res) => {
           if(err) Meteor.call('addChat', 'meta', err.message);
           else  Meteor.call('addChat', 'assistant', res);
         });

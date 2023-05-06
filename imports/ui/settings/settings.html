@@ -1,9 +1,37 @@
 <template name="settings">
   <h2>Settings</h2>
 
+  <h3>OpenAI</h3>
   <form class="js-set-api-key">
     <input type="text" placeholder="OpenAI API Key" id="api-key" value="">
     <button type="submit" class="btn btn-primary">Set API Key</button>
   </form>
+
+  {{#unless Session 'contextId'}}
+
+  <p class="mt-5">
+    Please select a context to edit import/export settings.
+  </p>
+
+  {{else}}
+
+  <h3>Exports</h3>
+  <button class="js-export-tasks btn btn-primary">Export Tasks</button>
+  <button class="js-export-contexts btn btn-primary">Export Primary Contexts</button>
+
+  <h3>Imports</h3>
+
+  <h4>Tasks</h4>
+  <p>Paste JSON</p>
+  <textarea id="import-tasks" rows="6" cols="100"></textarea>
+  <button class="js-import-tasks btn btn-primary">Import Tasks</button>
+
+
+  <h4>Primary Contexts</h4>
+  <p>Paste JSON</p>
+  <textarea id="import-primary-contexts" rows="6" cols="100"></textarea>
+  <button class="js-import-primary-contxets btn btn-primary">Import Primary Contexts</button>
+
+  {{/unless}}
 
 </template>

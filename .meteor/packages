@@ -19,10 +19,6 @@ ecmascript@0.16.6              # Enable ECMAScript2015+ syntax in app code
 typescript@4.9.4              # Enable TypeScript syntax in .ts and .tsx modules
 shell-server@0.5.0            # Server-side component of the `meteor shell` command
 
-
-
-hot-module-replacement@0.5.2  # Update code in development without reloading the page
-blaze-hot               # Update files using Blaze's API with HMR
 check
 http
 less
@@ -33,3 +29,4 @@ fortawesome:fontawesome
 session
 accounts-password
 accounts-ui
+dburles:mongo-collection-instances
