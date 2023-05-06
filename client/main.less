@@ -1,0 +1,126 @@
+html, body {
+  padding: 0px;
+  font-family: "Roboto", sans-serif;
+}
+
+.navbar {
+  margin-bottom: 10px;
+}
+
+h2 {
+  margin: 10px 0;
+  padding: 0px;
+  font-size: 24px;
+  font-family: "Montserrat", sans-serif;
+}
+
+#login-buttons {
+  display: flex!important;
+  align-items: center!important;
+}
+
+input, textarea, button {
+  border: 1px solid #dcb;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+#tasks, #contexts {
+  margin: 10px 0;
+}
+
+button {
+  padding: 5px;
+  font-size: 16px;
+  &:focus {
+    outline: none;
+  }
+}
+
+#task-form {
+  margin-bottom: 10px;
+}
+
+.task, .context {
+  .text {   
+    &.generated {
+      color: #a50
+    }
+    &.inprogress {
+      color: #a70
+    }
+    &.done {
+      color: #0a0
+    }
+  }
+  .date {
+    color: #aaa;
+    font-size: 12px;
+  }
+  button {
+    margin: 2px;
+    padding: 2px;
+    font-size: 12px;
+  }
+}
+
+[contenteditable="true"] {
+  border: 0;
+  padding: 5px;
+}
+
+[contenteditable="true"]:focus {
+  border-color: blue;
+}
+
+.stats {
+  font-size: 12px;
+  font-family: "Montserrat", sans-serif;
+  color: #555;
+}
+
+.chats {
+  margin: 10px 0;
+  .chat {
+    margin: 5px 0;
+    &:hover {
+      background-color: #eee;
+    }
+    &.assistant {
+      .message {
+        color: #a60;
+      }
+    }
+    .role {
+      color: #aaa;
+      font-size: 12px;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .message {
+      margin: 0;
+      padding: 5px;
+      font-size: 16px;
+      display: inline-block;
+      max-width: calc(100% - 150px);
+      vertical-align: top;
+    }
+    .date {
+      color: #aaa;
+      font-size: 12px;
+      display: inline-block;
+      margin-left: 5px;
+    }
+    .delete {
+      color: #aaa;
+      font-size: 12px;
+      display: inline-block;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+    .delete {
+      float: right;
+    }
+  }
+}
