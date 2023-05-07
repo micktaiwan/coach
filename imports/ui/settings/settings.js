@@ -2,6 +2,12 @@ import { exportCollection } from '../../api/helpers.js';
 
 import './settings.html';
 
+Template.settings.helpers({
+  selectedModel(model) {
+    return Meteor.user()?.openAI?.model === model ? 'selected' : '';
+  },
+});
+
 Template.settings.events({
   'click .js-set-api-key'(event) {
     event.preventDefault();
