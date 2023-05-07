@@ -3,9 +3,26 @@
 
   <h3>OpenAI</h3>
 
-  <form class="js-set-api-key">
-    <input type="password" placeholder="OpenAI API Key" id="api-key" value="{{currentUser.openAI.apiKey}}">
-    <button type="submit" class="btn btn-primary">Set API Key</button>
+  <form class="form js-set-api-key">
+    <div>
+      <label for="api-key">API Key:</label>
+    </div>
+    <div>
+      <input type="password" placeholder="Enter API Key" id="api-key" value="{{currentUser.openAI.apiKey}}">
+    </div>
+    <div>
+      <label for="model">Model:</label>
+    </div>
+    <div>
+      <select id="model">
+        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+        <option value="gpt-4">gpt-4</option>
+      </select>
+    </div>
+    <div></div>
+    <div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
   </form>
 
   {{#unless Session 'contextId'}}

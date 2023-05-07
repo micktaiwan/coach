@@ -26,7 +26,10 @@ Template.chats.events({
       if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
       else {
         Meteor.call('openaiGenerateText', Session.get('contextId'), '', message, (err, res) => {
-          if(err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
+          if(err) {
+            console.log(err);
+            Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
+          }
           else  Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
         });
 

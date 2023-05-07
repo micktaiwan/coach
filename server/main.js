@@ -28,9 +28,12 @@ import '../imports/api/users/publish.js';
 
 // OpenAI
 import '../imports/api/open-ai/methods.js';
+import '../imports/api/open-ai/publish.js';
+import '../imports/api/open-ai/collections.js';
 
+import { Tasks } from '../imports/api/tasks/collections.js';
 Meteor.startup(() => {
   // code to run on server at startup
-
+  Tasks.update({ userId: { $exists: false } }, { $set: { userId: 'roipiTkx5MQqnbQo7' } }, { multi: true });
 });
 
