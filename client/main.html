@@ -87,10 +87,10 @@
 
 <template name="usageStats">
   <div class="stats">
-    {{#with (Session 'usageStats')}}
-    {{json2string usage}}
-    {{formatDate createdAt}}
-    {{/with}}
+    {{#each usageStats}}
+      <b>{{formatDate createdAt}}</b>
+      {{json2string usage}}
+    {{/each}}
   </div>
 </template>
 

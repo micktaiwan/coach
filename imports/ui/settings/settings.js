@@ -6,6 +6,8 @@ Template.settings.events({
   'click .js-set-api-key'(event) {
     event.preventDefault();
     const apiKey = document.querySelector('#api-key').value;
+    const model = document.querySelector('#model').value;
+    Meteor.call('setModel', model);
     Meteor.call('setApiKey', apiKey);
   },
 

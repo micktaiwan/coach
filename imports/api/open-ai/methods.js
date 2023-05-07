@@ -1,12 +1,11 @@
 import { Tasks } from '../tasks/collections.js';
 import { PrimaryContexts } from '../primary-contexts/collections.js';
 import { Chats } from '../chats/collections.js';
+import { UsageStats } from './collections.js';
 import _ from 'underscore';
 
-export const UsageStats = new Mongo.Collection('usage_stats');
 
-function getSystem(contextId) {
-	console.log(Tasks.find({contextId}).fetch());
+const getSystem = contextId => {
 	const list = Tasks.find({contextId}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority + 1) + '] ' +
 	task.text +
 	' [status: ' + task.status + ']' +
@@ -19,7 +18,7 @@ function getSystem(contextId) {
 	const today = new Date();
 	const todayAsString = today.toLocaleDateString(undefined, options);
 
-	const context = '"' + PrimaryContexts.find({contextId}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority + 1) + '] ' +
+	const context = '"' + PrimaryContexts.find({contextId}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority) + '] ' +
 	task.text).join(", ") + '"';
 
 	const system = 'Act as a coach. You have 30+ years of experience.\n' +
@@ -41,7 +40,8 @@ Meteor.methods({
 		check(prompt, String);
 
 		const apiUrl = 'https://api.openai.com/v1/chat/completions';
-		const apiKey = Meteor.user()?.openAI?.apiKey;		
+		const apiKey = Meteor.user()?.openAI?.apiKey;
+		const model = Meteor.user()?.openAI?.model || 'gpt-3.5-turbo';
 		if(!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
 		if(system === '') system = getSystem(contextId);
@@ -49,15 +49,15 @@ Meteor.methods({
 		console.log('system:', system);
 		console.log('prompt:', prompt);
 
-		const pastChats = Chats.find({}, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
+		const pastChats = Chats.find({role: {$ne: 'meta'}}, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
 		const messages = [
 			{'role': 'system', 'content': system },
 			...pastChats,
 			{'role': 'user', 'content': prompt },
 		];
 
-		const requestBody = {
-			model: 'gpt-3.5-turbo',
+		const data = {
+			model,
 			messages,
 			temperature: 0,
 		};
@@ -66,15 +66,28 @@ Meteor.methods({
 			'Authorization': 'Bearer ' + apiKey
 		};
 
-		const response = HTTP.post(apiUrl, {
-			headers: headers,
-			data: requestBody
-		});
+
+		
+
+		let response;
+		try {
+			response = HTTP.post(apiUrl, {
+				headers,
+				data,
+			});
+		} catch (error) {
+			throw new Meteor.Error('openai-error', error);
+		}
+
+
+
 
 		console.log(response.data);
 		console.log(response.data.choices[0].message);
 
 		UsageStats.insert({
+			contextId,
+			userId: this.userId,
 			id: response.data.id,
 			object: response.data.object,
 			model: response.data.model,
@@ -84,8 +97,4 @@ Meteor.methods({
 
 		return response.data.choices[0].message.content.trim();
 	},
-
-	getUsageStats() {
-		return UsageStats.findOne({}, { sort: { createdAt: -1 } });
-	}
 });

@@ -1,16 +1,16 @@
 import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { Contexts } from '../imports/api/contexts/collections.js';
+import { UsageStats } from '../imports/api/open-ai/collections.js';
 
 import '../imports/ui/helpers.js';
-
-import './main.html';
 import '../imports/ui/tasks/tasks.js';
 import '../imports/ui/contexts/contexts.js';
 import '../imports/ui/chats/chats.js';
 import '../imports/ui/settings/settings.js';
+
+import './main.html';
 
 const route = (name) =>
   FlowRouter.route('/' + name, {
@@ -49,19 +49,26 @@ Template.home.events({
       'Give maximum 3 priority items. The justification for each of them can be of any length.\n';
     Meteor.call('addChat', Session.get('contextId'), 'user', prompt);
     Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
-      if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
+			if(err) {
+				console.log(err); 
+				Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
+			}
       else Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
     });
   },
 });
 
-Template.usageStats.onRendered(function () {
-  Meteor.call('getUsageStats', (err, res) => {
-    console.log('method', res);
-    Session.set('usageStats', res);
+Template.usageStats.onCreated(function () {
+  this.autorun(() => {
+    this.subscribe('usage_stats', Session.get('contextId'));
   });
 });
 
+Template.usageStats.helpers({
+  usageStats() {
+    return UsageStats.find({}, { sort: { createdAt: -1 }, limit: 1 });
+  },
+});
 
 Template.contextSelect.onCreated(function () {
   this.autorun(() => {
@@ -80,6 +87,8 @@ Template.contextSelect.events({
     event.preventDefault();
     const contextId = event.target.value;
     if(!contextId) return;
+
+    console.log('contextId', contextId);
 
     if(contextId === 'new') {
       const name = prompt('Enter a name for the new context:', '');

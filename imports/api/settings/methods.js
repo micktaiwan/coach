@@ -8,6 +8,13 @@ Meteor.methods({
     Meteor.users.update(Meteor.userId(), { $set: { 'openAI.apiKey': apiKey } });
   },
 
+  setModel(model) {
+    check(model, String);
+    if (!this.userId) throw new Meteor.Error('not-authorized');
+    
+    Meteor.users.update(Meteor.userId(), { $set: { 'openAI.model': model } });
+  },
+
   fetchCollection(collectionName, query) {
     check(collectionName, String);
     if (!this.userId) throw new Meteor.Error('not-authorized');
