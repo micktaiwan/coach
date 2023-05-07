@@ -2,8 +2,9 @@
   <h2>Settings</h2>
 
   <h3>OpenAI</h3>
+
   <form class="js-set-api-key">
-    <input type="text" placeholder="OpenAI API Key" id="api-key" value="">
+    <input type="password" placeholder="OpenAI API Key" id="api-key" value="{{currentUser.openAI.apiKey}}">
     <button type="submit" class="btn btn-primary">Set API Key</button>
   </form>
 
@@ -30,7 +31,7 @@
   <h4>Primary Contexts</h4>
   <p>Paste JSON</p>
   <textarea id="import-primary-contexts" rows="6" cols="100"></textarea>
-  <button class="js-import-primary-contxets btn btn-primary">Import Primary Contexts</button>
+  <button class="js-import-primary-contexts btn btn-primary">Import Primary Contexts</button>
 
   {{/unless}}
 

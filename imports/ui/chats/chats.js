@@ -3,7 +3,10 @@ import './chats.html'
 import { Chats } from '../../api/chats/collections.js';
 
 Template.chats.onCreated(function() {
-  this.subscribe('chats');
+  this.autorun(() => {
+    this.subscribe('chats', Session.get('contextId'));
+  });
+
 });
 
 Template.chats.helpers({
@@ -19,12 +22,12 @@ Template.chats.events({
     const form = instance.find('#chat-form');
     const message = form.querySelector('input[name="message"]').value;
 
-    Meteor.call('addChat', 'user', message, (err, res) => {
-      if (err) Meteor.call('addChat', 'meta', err.message);
+    Meteor.call('addChat', Session.get('contextId'), 'user', message, (err, res) => {
+      if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
       else {
         Meteor.call('openaiGenerateText', Session.get('contextId'), '', message, (err, res) => {
-          if(err) Meteor.call('addChat', 'meta', err.message);
-          else  Meteor.call('addChat', 'assistant', res);
+          if(err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
+          else  Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
         });
 
         form.reset();

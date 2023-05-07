@@ -1,4 +1,7 @@
 export function exportCollection(collName, query) {
+	
+	if(!query.contextId) throw new Error('query must include contextId');
+
   Meteor.call('fetchCollection', collName, query, (err, collectionData) => {
     const json = JSON.stringify(collectionData);
     const blob = new Blob([json], { type: 'application/json' });

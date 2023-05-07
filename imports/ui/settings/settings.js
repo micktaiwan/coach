@@ -11,23 +11,23 @@ Template.settings.events({
 
   'click .js-export-tasks'(event) {
     event.preventDefault();
-    exportCollection('tasks', { contextId: Session.get('currentContextId') } );
+    exportCollection('tasks', { contextId: Session.get('contextId') } );
   },
 
   'click .js-export-contexts'(event) {
     event.preventDefault();
-    exportCollection('primary_contexts', { contextId: Session.get('currentContextId') });
+    exportCollection('primary_contexts', { contextId: Session.get('contextId') });
   },
 
   'click .js-import-tasks'(event) {
     event.preventDefault();
     const tasksJSON = document.querySelector('#import-tasks').value;
-    Meteor.call('importTasks', tasksJSON);
+    Meteor.call('importTasks', Session.get('contextId'), tasksJSON);
   },
 
   'click .js-import-primary-contexts'(event) {
     event.preventDefault();
     const contextsJSON = document.querySelector('#import-primary-contexts').value;
-    Meteor.call('importPrimaryContexts', contextsJSON);
+    Meteor.call('importPrimaryContexts', Session.get('contextId'), contextsJSON);
   },
 });

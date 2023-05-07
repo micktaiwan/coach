@@ -1,5 +1,5 @@
 import { Tasks } from './collections.js';
 
-Meteor.publish('tasks', function() {
-  return Tasks.find();
+Meteor.publish('tasks', function(contextId) {
+  return Tasks.find({contextId, userId: this.userId});
 });

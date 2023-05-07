@@ -5,7 +5,9 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import './tasks.html';
 
 Template.tasks.onCreated(function() {
-  this.subscribe('tasks');
+	this.autorun(() => {
+    this.subscribe('tasks', Session.get('contextId'));
+  });
   this.searchQuery = new ReactiveVar('');
 });
 
@@ -118,10 +120,10 @@ Template.task.events({
 
 	'click .js-plan'(event, instance) {
 		event.preventDefault();
-		const prompt = 'Suggest a step by step plan for this task: "' + this.text;
+		const prompt = 'Suggest a step by step plan for this task. Reply in HTML format. Task:"' + this.text + '"';
 		Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
 			if(err) console.error(err);
-			else Meteor.call('addTask', { text: res, priority: this.priority, generated: true });
+			else Meteor.call('addTask', { text: res, priority: this.priority, generated: true }, Session.get('contextId'));
 		});
 	},
 

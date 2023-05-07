@@ -6,7 +6,9 @@ import { exportCollection } from '../../api/helpers.js';
 import './contexts.html';
 
 Template.contexts.onCreated(function () {
-  this.subscribe('primary_contexts');
+  this.autorun(() => {
+    this.subscribe('primary_contexts', Session.get('contextId'));
+  });
 });
 
 Template.contexts.onRendered(function () {

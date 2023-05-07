@@ -12,25 +12,27 @@ Meteor.methods({
     check(collectionName, String);
     if (!this.userId) throw new Meteor.Error('not-authorized');
     return Mongo.Collection.get(collectionName)
-      .find(query, { projection: { _id: 0, contextId: 0 } })
+      .find(query, { projection: { _id: 0, contextId: 0, userId: 0 } })
       .fetch();
   },
 
-  importTasks(tasksJSON) {
+  importTasks(contextId, tasksJSON) {
     check(tasksJSON, String);
 
     const tasks = JSON.parse(tasksJSON);
     tasks.forEach((task) => {
-      Meteor.call('addTask', task, Session.get('contextId'));
+      task.createdAt = new Date(task.createdAt);
+      Meteor.call('addTask', task,contextId);
     });
   },
 
-  importPrimaryContexts(contextsJSON) {
+  importPrimaryContexts(contextId, contextsJSON) {
     check(contextsJSON, String);
 
     const contexts = JSON.parse(contextsJSON);
     contexts.forEach((context) => {
-      Meteor.call('addPrimaryContext', context, Session.get('contextId'));
+      context.createdAt = new Date(context.createdAt);
+      Meteor.call('addPrimaryContext', context, contextId);
     });
   },
 });
