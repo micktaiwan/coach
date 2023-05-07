@@ -21,30 +21,46 @@
         aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link active" aria-current="page" href="/">Chat</a>
-          <a class="nav-link" href="/tasks">Tasks</a>
-          <a class="nav-link" href="/contexts">Context</a>
-          <a class="nav-link" href="/settings">Settings</a>
+      {{#if currentUser}}
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link active" aria-current="page" href="/">Chat</a>
+            <a class="nav-link" href="/tasks">Tasks</a>
+            <a class="nav-link" href="/contexts">Context</a>
+            <a class="nav-link" href="/settings">Settings</a>
+          </div>
         </div>
-      </div>
-      <div class="ml-auto">
-        {{> contextSelect}}
-      </div>
-      <div class="ml-auto">
+        <div class="ml-auto">
+          {{> contextSelect}}
+        </div>
+      {{/if}}
+      <div class="collapse navbar-collapse">
         {{> loginButtons}}
       </div>
-  </div>
+    </div>
   </nav>
 </template>
 
 <template name="layout">
   {{> header}}
 
-  <div class="container">
-    {{> Template.dynamic template=main}}
-  </div>
+  {{#unless currentUser}}
+    <div class="container">
+      <div class="alert alert-warning" role="alert">
+        Please login
+      </div>
+    </div>
+  {{else}}
+    <div class="container">
+      {{#unless Session 'contextId'}}
+        <div class="alert alert-warning" role="alert">
+          Please select a context
+        </div>
+      {{else}}
+        {{> Template.dynamic template=main}}
+      {{/unless}}
+    </div>
+  {{/unless}}
 
 </template>
 
@@ -82,7 +98,7 @@
   <select name="context-select">
     <option value="">Select a context</option>
     {{#each contexts}}
-      <option value="{{_id}}">{{name}}</option>
+    <option value="{{_id}}">{{name}}</option>
     {{/each}}
     <option value="new">New context</option>
   </select>

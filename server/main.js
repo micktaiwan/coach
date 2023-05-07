@@ -23,6 +23,9 @@ import '../imports/api/chats/collections.js';
 // settings
 import '../imports/api/settings/methods.js';
 
+// users
+import '../imports/api/users/publish.js';
+
 // OpenAI
 import '../imports/api/open-ai/methods.js';
 

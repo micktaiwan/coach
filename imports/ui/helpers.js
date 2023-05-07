@@ -4,3 +4,4 @@ Template.registerHelper('formatDate', (date) => {
   if (date) return date.toLocaleString();
   else return '';
 });
+Template.registerHelper('stringify', (obj) => JSON.stringify(obj, null, 2));

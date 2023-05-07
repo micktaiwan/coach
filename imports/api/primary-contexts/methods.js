@@ -5,15 +5,15 @@ Meteor.methods({
   addPrimaryContext: function(context, contextId) {
     check(context, Object);
     check(context.text, String);
+    check(contextId, String);
 
     PrimaryContexts.insert({
       userId: this.userId,
-      contextId: contextId,
+      contextId,
       text: context.text,
-      createdAt: new Date(),
-      status: 'open',
+      createdAt: context.createdAt || new Date(),
+      status: context.status || 'open',
       priority: context.priority || PrimaryContexts.find({contextId: contextId}).count(),
-      ..._.omit(context, ['text', 'priority'])
     });
   },
 

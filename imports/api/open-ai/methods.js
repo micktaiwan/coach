@@ -29,7 +29,7 @@ function getSystem(contextId) {
 	'This is all the context your client gave you:\n' +
 	context + '[end of context]\n' +
 	'This context is very important and must be taken into account for each reply you provide to your client.\n' +
-	'This is the list of your client current tasks:"' + list + '"\n';
+	'This is the list of your client current tasks:"' + list + '"';
 	return system;
 }
 
@@ -41,7 +41,7 @@ Meteor.methods({
 		check(prompt, String);
 
 		const apiUrl = 'https://api.openai.com/v1/chat/completions';
-		const apiKey = Meteor.user()?.openAI.apiKey;		
+		const apiKey = Meteor.user()?.openAI?.apiKey;		
 		if(!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
 		if(system === '') system = getSystem(contextId);

@@ -36,7 +36,7 @@ Template.home.events({
     event.preventDefault();
     if (confirm('Are you sure?')) {
       Meteor.call('removeAllChats', (err, res) => {
-        if (err) Meteor.call('addChat', 'meta', err.message);
+        if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
       });
     }
   },
@@ -47,10 +47,10 @@ Template.home.events({
       'Find the priorities among my current tasks and justify them with pros and cons.\n' +
       'Use this format: "[original_task_number] [max 4 words summary of the task]: [justification]".\n' +
       'Give maximum 3 priority items. The justification for each of them can be of any length.\n';
-    Meteor.call('addChat', 'user', prompt);
+    Meteor.call('addChat', Session.get('contextId'), 'user', prompt);
     Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
-      if (err) Meteor.call('addChat', 'meta', err.message);
-      else Meteor.call('addChat', 'assistant', res);
+      if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
+      else Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
     });
   },
 });
@@ -64,7 +64,9 @@ Template.usageStats.onRendered(function () {
 
 
 Template.contextSelect.onCreated(function () {
-  this.subscribe('contexts');
+  this.autorun(() => {
+    this.subscribe('contexts', Session.get('contextId'));
+  });
 });
 
 Template.contextSelect.helpers({

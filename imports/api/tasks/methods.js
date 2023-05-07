@@ -7,15 +7,16 @@ Meteor.methods({
     check(task.text, String);
     check(contextId, String);
 
+    task.text = task.text.replace(/\r\n|\r|\n/g, '<br>');
+
     // Add the task to the Tasks collection
     Tasks.insert({
       userId: this.userId,
       contextId: contextId,
       text: task.text,
-      createdAt: new Date(),
-      status: 'open',
+      createdAt: task.createdAt || new Date(),
+      status: task.status || 'open',
       priority: task.priority || Tasks.find({contextId: contextId}).count(),
-      ..._.omit(task, ['text', 'priority'])
     });
   },
 
