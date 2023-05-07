@@ -24,8 +24,8 @@ Meteor.methods({
     Chats.remove(chatId);
   },
 
-  removeAllChats: function() {
-    Chats.remove({});
+  removeAllChats: function(contextId) {
+    Chats.remove({contextId, userId: this.userId});
   },
 
 });

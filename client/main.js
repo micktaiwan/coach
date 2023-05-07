@@ -35,7 +35,7 @@ Template.home.events({
   'click .js-remove-all-chats'(event, instance) {
     event.preventDefault();
     if (confirm('Are you sure?')) {
-      Meteor.call('removeAllChats', (err, res) => {
+      Meteor.call('removeAllChats', Session.get('contextId'), (err, res) => {
         if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
       });
     }
