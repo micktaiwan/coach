@@ -32,7 +32,6 @@ const getSystem = contextId => {
 	return system;
 }
 
-
 Meteor.methods({
 
 	openaiGenerateText(contextId, system, prompt) {
@@ -46,20 +45,21 @@ Meteor.methods({
 
 		if(system === '' && contextId) system = getSystem(contextId);
 
-		console.log('system:', system);
-		console.log('prompt:', prompt);
-
 		const pastChats = Chats.find({contextId, role: {$ne: 'meta'}}, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
 		const messages = [
 			{'role': 'system', 'content': system },
 			...pastChats,
-			{'role': 'user', 'content': prompt },
 		];
+
+		if(prompt) messages.push({'role': 'user', 'content': prompt});
+
+		console.log('prompt:', prompt);
+		console.log('messages:', messages);
 
 		const data = {
 			model,
 			messages,
-			temperature: 0,
+			temperature: 0.5,
 		};
 		const headers = {
 			'Content-Type': 'application/json',
