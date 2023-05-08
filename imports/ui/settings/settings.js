@@ -30,12 +30,19 @@ Template.settings.events({
   'click .js-import-tasks'(event) {
     event.preventDefault();
     const tasksJSON = document.querySelector('#import-tasks').value;
-    Meteor.call('importTasks', Session.get('contextId'), tasksJSON);
+    Meteor.call('importTasks', Session.get('contextId'), tasksJSON, (err, res) => {
+      console.log(err);
+      if(err) alert(err.message);
+      else document.querySelector('#import-tasks').value = '';
+    });
   },
 
   'click .js-import-primary-contexts'(event) {
     event.preventDefault();
     const contextsJSON = document.querySelector('#import-primary-contexts').value;
-    Meteor.call('importPrimaryContexts', Session.get('contextId'), contextsJSON);
+    Meteor.call('importPrimaryContexts', Session.get('contextId'), contextsJSON, (err, res) => {
+      if(err) alert(err.message);
+      else document.querySelector('#import-primary-contexts').value = '';
+    });
   },
 });

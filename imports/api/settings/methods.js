@@ -26,20 +26,28 @@ Meteor.methods({
   importTasks(contextId, tasksJSON) {
     check(tasksJSON, String);
 
-    const tasks = JSON.parse(tasksJSON);
-    tasks.forEach((task) => {
-      task.createdAt = new Date(task.createdAt);
-      Meteor.call('addTask', task,contextId);
-    });
-  },
+    try {
+      const tasks = JSON.parse(tasksJSON);
+      tasks.forEach((task) => {
+        task.createdAt = new Date(task.createdAt);
+        Meteor.call('addTask', task,contextId);
+      });
+    } catch (e) {
+      throw new Meteor.Error(e.message);
+    }
+},
 
   importPrimaryContexts(contextId, contextsJSON) {
     check(contextsJSON, String);
 
-    const contexts = JSON.parse(contextsJSON);
-    contexts.forEach((context) => {
-      context.createdAt = new Date(context.createdAt);
-      Meteor.call('addPrimaryContext', context, contextId);
-    });
+    try {
+      const contexts = JSON.parse(contextsJSON);
+      contexts.forEach((context) => {
+        context.createdAt = new Date(context.createdAt);
+        Meteor.call('addPrimaryContext', context, contextId);
+      });
+    } catch (e) {
+      throw new Meteor.Error(e.message);
+    }
   },
 });
