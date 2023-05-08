@@ -102,7 +102,6 @@ Template.task.events({
 
   'blur span[contenteditable]': function(event, template) {
     let newText = event.currentTarget.innerText.trim();
-		console.log(newText);
     if (newText !== '') Meteor.call('editTaskText', this._id, newText);
 		else event.currentTarget.innerHTML = this.text;
   },
