@@ -5,4 +5,4 @@ Template.registerHelper('formatDate', (date) => {
   else return '';
 });
 Template.registerHelper('stringify', (obj) => JSON.stringify(obj, null, 2));
-Template.registerHelper('nl2br', (str) => {console.log(str);   return str.replace(/\n/g, '<br>')});
+Template.registerHelper('nl2br', (str) => str.replace(/\n/g, '<br>'));

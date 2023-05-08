@@ -101,13 +101,10 @@ Template.task.events({
 	},
 
   'blur span[contenteditable]': function(event, template) {
-		// console.log(event.currentTarget.html);
-    let newText = event.currentTarget.textContent.trim();
-		// replace new line chat with br
-		// console.log('blur', newText);
-		newText = newText.replace(/\n/g, '<br>');
+    let newText = event.currentTarget.innerText.trim();
+		console.log(newText);
     if (newText !== '') Meteor.call('editTaskText', this._id, newText);
-		else event.currentTarget.textContent = this.text;
+		else event.currentTarget.innerHTML = this.text;
   },
 
 	'click .js-plan'(event, instance) {
