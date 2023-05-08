@@ -44,12 +44,12 @@ Meteor.methods({
 		const model = Meteor.user()?.openAI?.model || 'gpt-3.5-turbo';
 		if(!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
-		if(system === '') system = getSystem(contextId);
+		if(system === '' && contextId) system = getSystem(contextId);
 
 		console.log('system:', system);
 		console.log('prompt:', prompt);
 
-		const pastChats = Chats.find({role: {$ne: 'meta'}}, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
+		const pastChats = Chats.find({contextId, role: {$ne: 'meta'}}, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
 		const messages = [
 			{'role': 'system', 'content': system },
 			...pastChats,
@@ -66,9 +66,6 @@ Meteor.methods({
 			'Authorization': 'Bearer ' + apiKey
 		};
 
-
-		
-
 		let response;
 		try {
 			response = HTTP.post(apiUrl, {
@@ -78,9 +75,6 @@ Meteor.methods({
 		} catch (error) {
 			throw new Meteor.Error('openai-error', error);
 		}
-
-
-
 
 		console.log(response.data);
 		console.log(response.data.choices[0].message);
