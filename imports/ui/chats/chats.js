@@ -54,7 +54,9 @@ Template.chats.events({
 
   'click .js-improve-answer'(event, instance) {
     event.preventDefault();
-    const message = "Let's work this out in a step by step way to be sure we have the right answer.";
+    // const message = "Let's work this out in a step by step way to be sure we have the right answer.";
+    const message = "Can you please provide additional evidence or examples to support your previous statement and further strengthen your argument?";
+    Session.set('loadingAnswer', true);
     Meteor.call('addChat', Session.get('contextId'), 'user', message, (err, res) => {
       Meteor.call('openaiGenerateText', Session.get('contextId'), '', '', (err, res) => {
         if(err) {
@@ -62,6 +64,7 @@ Template.chats.events({
           Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
         }
         else  Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
+        Session.set('loadingAnswer', false);
       });
     });
 
