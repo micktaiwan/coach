@@ -136,7 +136,9 @@ body {
     margin: 10px 0;
 
     .chat {
-      margin: 5px 0;
+      margin: 0;
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
 
       &:hover {
         background-color: #eee;
@@ -159,7 +161,6 @@ body {
         margin: 0;
         padding: 5px;
         font-size: 16px;
-        display: inline-block;
         max-width: calc(100% - 150px);
         vertical-align: top;
       }
@@ -171,22 +172,26 @@ body {
         margin-right: 5px;
       }
 
-      .delete {
-        color: #aaa;
-        font-size: 12px;
+      .buttons {
         display: inline-block;
-        margin-left: 5px;
-        cursor: pointer;
+        vertical-align: top;
+        margin: 0 5px 5px 5px;
+        float: right;
+
+        .delete {
+          color: #aaa;
+          font-size: 12px;
+          margin-left: 5px;
+          float: right;
+        }
+
+        .improve {
+          display: inline-block;
+          margin-right: 5px;
+        }
+  
       }
 
-      .delete {
-        float: right;
-      }
-
-      .improve {
-        float: right;
-        margin-right: 5px;
-      }
     }
   }
 }
