@@ -45,8 +45,12 @@ Template.home.events({
     event.preventDefault();
     const prompt =
       'Find the priorities among my current tasks and justify them with pros and cons.\n' +
-      'Use this format: "[original_task_number] [max 4 words summary of the task]: [justification]".\n' +
-      'Give maximum 3 priority items. The justification for each of them can be of any length.\n';
+      "Let's start by reviewing all the tasks and categorizing them based on their urgency and importance.\n"+
+      "Then we can prioritize them based on their impact.\n" +
+      'Use this format: "[original_task_number] [short summary of the task]: [justification]".\n' +
+      // "Once you have a list of prioritized tasks, you can discuss the pros and cons of each and decide on the top three.\n";
+      'Give maximum 3 priority items. The justification for each of them can be of any length.\n' +
+      'Do not give any meta explanation of the process.\n';
     Meteor.call('addChat', Session.get('contextId'), 'user', prompt);
     Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
 			if(err) {
