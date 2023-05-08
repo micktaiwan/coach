@@ -52,12 +52,14 @@ Template.home.events({
       'Give maximum 3 priority items. The justification for each of them can be of any length.\n' +
       'Do not give any meta explanation of the process.\n';
     Meteor.call('addChat', Session.get('contextId'), 'user', prompt);
+    Session.set('loadingAnswer', true);
     Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
 			if(err) {
 				console.log(err); 
 				Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
 			}
       else Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
+      Session.set('loadingAnswer', false);
     });
   },
 });
