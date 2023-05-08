@@ -94,14 +94,18 @@ Template.task.events({
 	},
 
 	'keydown span[contenteditable]': function(event, template) {
-		if (event.keyCode === 13) {
+		if (event.keyCode === 13 && !event.shiftKey) {
 			event.preventDefault();
 			event.currentTarget.blur();
 		}
 	},
 
   'blur span[contenteditable]': function(event, template) {
-    const newText = event.currentTarget.textContent.trim();
+		// console.log(event.currentTarget.html);
+    let newText = event.currentTarget.textContent.trim();
+		// replace new line chat with br
+		// console.log('blur', newText);
+		newText = newText.replace(/\n/g, '<br>');
     if (newText !== '') Meteor.call('editTaskText', this._id, newText);
 		else event.currentTarget.textContent = this.text;
   },
