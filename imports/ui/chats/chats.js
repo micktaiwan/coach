@@ -20,10 +20,14 @@ Template.chats.events({
   'click .js-send-message'(event, instance) {
     event.preventDefault();
     const form = instance.find('#chat-form');
-    const message = form.querySelector('input[name="message"]').value;
+    const message = form.querySelector('textarea[name="message"]').value;
+    Session.set('loadingAnswer', true);
 
     Meteor.call('addChat', Session.get('contextId'), 'user', message, (err, res) => {
-      if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
+      if (err) {
+        Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
+        Session.set('loadingAnswer', false);
+      }
       else {
         Meteor.call('openaiGenerateText', Session.get('contextId'), '', message, (err, res) => {
           if(err) {
@@ -31,6 +35,7 @@ Template.chats.events({
             Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
           }
           else  Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
+          Session.set('loadingAnswer', false);
         });
 
         form.reset();

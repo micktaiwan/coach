@@ -7,3 +7,4 @@ Template.registerHelper('formatDate', (date) => {
 Template.registerHelper('stringify', (obj) => JSON.stringify(obj, null, 2));
 Template.registerHelper('nl2br', (str) => str.replace(/\n/g, '<br>'));
 Template.registerHelper('eq', (a, b) => a === b);
+Template.registerHelper('now', () => new Date());

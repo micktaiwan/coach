@@ -3,6 +3,8 @@
     {{#each chats}}
       {{> chat}}
     {{/each}}
+
+    {{> loadingAnswer}}
   
     <form id="chat-form">
       <textarea rows="5" cols="80" type="text" name="message" placeholder="Type to send new message"></textarea><br>
@@ -14,12 +16,24 @@
 
 <template name="chat">
   <div class="chat {{role}}">
+    <div class="buttons">
+      <div class="delete"><button class="js-delete-chat btn btn-danger"><i class="fa fa-trash"></i></button></div>
+      {{#if eq role 'assistant' }}
+        <div class="improve"><button class="js-improve-answer btn btn-primary" title="improve answer"><i class="fa fa-recycle"></i></button></div>
+      {{/if}}
+    </div>
     <div class="role">{{role}}</div>
-    <div class="message">{{{content}}}</div>
-    <div class="delete"><button class="js-delete-chat btn btn-danger"><i class="fa fa-trash"></i></button></div>
-    {{#if eq role 'assistant' }}
-      <div class="improve"><button class="js-improve-answer btn btn-primary" title="improve answer"><i class="fa fa-recycle"></i></button></div>
-    {{/if}}
     <div class="date">{{formatDate createdAt}}</div>
+    <div class="message">{{{content}}}</div>
   </div>
+</template>
+
+<template name="loadingAnswer">
+  {{#if Session 'loadingAnswer'}}
+    <div class="chat assistant loading-answer">
+      <div class="role">assistant</div>    
+      <div class="date">{{formatDate now}}</div>
+      <div class="message"><i class="fa fa-spinner fa-spin"></i></div>
+    </div>
+  {{/if}}
 </template>
