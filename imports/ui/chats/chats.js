@@ -29,7 +29,7 @@ Template.chats.events({
         Session.set('loadingAnswer', false);
       }
       else {
-        Meteor.call('openaiGenerateText', Session.get('contextId'), '', message, (err, res) => {
+        Meteor.call('openaiGenerateText', Session.get('contextId'), '', '', (err, res) => {
           if(err) {
             console.log(err);
             Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
