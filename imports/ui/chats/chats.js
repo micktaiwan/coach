@@ -42,7 +42,14 @@ Template.chats.events({
       }
     });
   },
-      
+
+  'keypress textarea[name="message"]'(event, instance) {
+    if (event.keyCode === 13 && !event.shiftKey) {
+      event.preventDefault();
+      instance.find('.js-send-message').click();
+    }
+  },
+  
   'click .js-delete-chat'(event, instance) {
     event.preventDefault();
     const chatId = this._id;
