@@ -31,6 +31,15 @@ route('contexts');
 route('tasks');
 route('settings');
 
+// LAYOUT
+
+Template.layout.helpers({
+
+  activeRoute(path) {
+    return FlowRouter.current().path === path ? 'active' : '';
+  }
+});
+
 Template.home.events({
   'click .js-remove-all-chats'(event, instance) {
     event.preventDefault();
@@ -45,7 +54,7 @@ Template.home.events({
     event.preventDefault();
     const prompt =
       'Find the priorities among my current tasks and justify them with pros and cons.\n' +
-      "Let's start by reviewing all the tasks and categorizing them based on their urgency and importance.\n"+
+      "Let's start by reviewing all the tasks and categorizing them based on their urgency and importance.\n" +
       "Then we can prioritize them based on their impact.\n" +
       'Use this format: "[original_task_number] [short summary of the task]: [justification]".\n' +
       // "Once you have a list of prioritized tasks, you can discuss the pros and cons of each and decide on the top three.\n";
@@ -54,10 +63,10 @@ Template.home.events({
     Meteor.call('addChat', Session.get('contextId'), 'user', prompt);
     Session.set('loadingAnswer', true);
     Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
-			if(err) {
-				console.log(err); 
-				Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
-			}
+      if (err) {
+        console.log(err);
+        Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
+      }
       else Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
       Session.set('loadingAnswer', false);
     });
@@ -92,11 +101,11 @@ Template.contextSelect.events({
   'change [name=context-select]'(event, instance) {
     event.preventDefault();
     const contextId = event.target.value;
-    if(!contextId) return;
+    if (!contextId) return;
 
     console.log('contextId', contextId);
 
-    if(contextId === 'new') {
+    if (contextId === 'new') {
       const name = prompt('Enter a name for the new context:', '');
       Meteor.call('addContext', name);
       return;
