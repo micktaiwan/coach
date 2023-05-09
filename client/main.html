@@ -31,10 +31,10 @@
         <nav id="sidebarMenu" class="col-3 col-lg-2 sidebar">
           <div class="position-sticky pt-3">
             <ul class="nav flex-column">
-              <li class="nav-item"><a class="nav-link" aria-current="page" href="/"><span class="material-icons-outlined">question_answer</span> Chats </a></li>
-              <li class="nav-item"><a class="nav-link" aria-current="page" href="/tasks"><span class="material-icons-outlined">task</span> Tasks </a></li>
-              <li class="nav-item"><a class="nav-link" aria-current="page" href="/contexts"><span class="material-icons-outlined">description</span> Context </a></li>
-              <li class="nav-item"><a class="nav-link" aria-current="page" href="/settings"><span class="material-icons-outlined">settings</span> Settings </a></li>
+              <li class="nav-item {{activeRoute '/'}}"><a class="nav-link" aria-current="page" href="/"><span class="material-icons-outlined">question_answer</span> Chats </a></li>
+              <li class="nav-item {{activeRoute '/tasks'}}"><a class="nav-link" aria-current="page" href="/tasks"><span class="material-icons-outlined">task</span> Tasks </a></li>
+              <li class="nav-item {{activeRoute '/contexts'}}"><a class="nav-link" aria-current="page" href="/contexts"><span class="material-icons-outlined">description</span> Context </a></li>
+              <li class="nav-item {{activeRoute '/settings'}}"><a class="nav-link" aria-current="page" href="/settings"><span class="material-icons-outlined">settings</span> Settings </a></li>
             </ul>
           </div>
         </nav>

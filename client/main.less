@@ -60,12 +60,15 @@ body {
     grid-template-columns: auto 1fr;
     gap: 1rem;
     align-items: center;
+
     label {
       grid-column: 1 / 2;
       margin-right: 1rem;
       text-align: right;
     }
-    input, select {
+
+    input,
+    select {
       grid-column: 2 / -1;
       width: 100%;
     }
@@ -189,9 +192,15 @@ body {
           display: inline-block;
           margin-right: 5px;
         }
-  
+
       }
 
+    }
+  }
+
+  #sidebarMenu {
+    .active {
+      background-color: #eee;
     }
   }
 }
