@@ -29,14 +29,12 @@
     <div class="container-fluid">
       <div class="row">
         <nav id="sidebarMenu" class="col-3 col-lg-2 sidebar">
-          <div class="position-sticky pt-3">
-            <ul class="nav flex-column">
-              <li class="nav-item"><a class="nav-link {{activeRoute '/'}}" aria-current="page" href="/"><span class="material-icons-outlined">question_answer</span> Chats </a></li>
-              <li class="nav-item"><a class="nav-link {{activeRoute '/tasks'}}" aria-current="page" href="/tasks"><span class="material-icons-outlined">task</span> Tasks </a></li>
-              <li class="nav-item"><a class="nav-link {{activeRoute '/contexts'}}" aria-current="page" href="/contexts"><span class="material-icons-outlined">description</span> Context </a></li>
-              <li class="nav-item"><a class="nav-link {{activeRoute '/settings'}}" aria-current="page" href="/settings"><span class="material-icons-outlined">settings</span> Settings </a></li>
-            </ul>
-          </div>
+          <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link {{activeRoute '/'}}" aria-current="page" href="/"><span class="material-icons-outlined">question_answer</span> Chats </a></li>
+            <li class="nav-item"><a class="nav-link {{activeRoute '/tasks'}}" aria-current="page" href="/tasks"><span class="material-icons-outlined">task</span> Tasks </a></li>
+            <li class="nav-item"><a class="nav-link {{activeRoute '/contexts'}}" aria-current="page" href="/contexts"><span class="material-icons-outlined">description</span> Context </a></li>
+            <li class="nav-item"><a class="nav-link {{activeRoute '/settings'}}" aria-current="page" href="/settings"><span class="material-icons-outlined">settings</span> Settings </a></li>
+          </ul>
         </nav>
         <main class="col-9 ms-sm-auto col-lg-10 px-md-4">
           {{#unless currentUser}}
