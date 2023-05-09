@@ -25,8 +25,8 @@ less
 underscore@1.0.13
 kadira:flow-router
 kadira:blaze-layout
-fortawesome:fontawesome
 session@1.2.1
 accounts-password@2.3.4
 accounts-ui@1.4.2
 dburles:mongo-collection-instances
+meteorhacks:inject-initial

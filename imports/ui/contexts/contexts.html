@@ -1,26 +1,20 @@
 <template name="contexts">
-    <h2>Context</h2>
-
-    <div class="alert alert-info">This context will be passed in every query sent to GPT</div>
-  
-    <ul id="contexts">
-      {{#each contexts}}
-        {{> context}}
-      {{/each}}
-    </ul>
-  
-    <form id="context-form">
-      <textarea name="text" placeholder="Type to add new context" rows="3" cols="100"></textarea><br>
-      <button class="js-add-context">Add Context</button>
-    </form>
-  
-  </template>
-
-  <template name="context">
-    <li data-id="{{_id}}" class="context">
-			<span contenteditable="true" class="text {{contextClass}} js-edit-context">{{text}}</span>
-      <button class="js-delete-context">Delete</button>
-			<span class="date">{{date}}</span>
-    </li>
-  </template>
-  
+  <h1><span class="material-icons-outlined">description</span> Context</h1>
+  <div class="alert alert-info">This context will be passed in every query sent to GPT</div>
+  <ul id="contexts">
+    {{#each contexts}}
+      {{> context}}
+    {{/each}}
+  </ul>
+  <form id="context-form">
+    <textarea name="text" placeholder="Type to add new context" rows="3" cols="100"></textarea><br>
+    <button class="js-add-context">Add Context</button>
+  </form>
+</template>
+<template name="context">
+  <li data-id="{{_id}}" class="context">
+    <span contenteditable="true" class="text {{contextClass}} js-edit-context">{{text}}</span>
+    <button class="js-delete-context">Delete</button>
+    <span class="date">{{date}}</span>
+  </li>
+</template>

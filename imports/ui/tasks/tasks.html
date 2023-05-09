@@ -1,21 +1,16 @@
 <template name="tasks">
-  <h2>Tasks</h2>
-
+  <h1><span class="material-icons-outlined">task</span> Tasks</h1>
   <input type="text" name="search" placeholder="Search tasks" id="search-input">
-
   <ul id="tasks">
     {{#each tasks}}
       {{> task}}
     {{/each}}
   </ul>
-
   <form id="task-form">
     <input size="100" type="text" name="text" placeholder="Type to add new tasks" />
     <button class="js-add-task btn btn-primary">Add Task</button>
   </form>
-
 </template>
-
 <template name="task">
   <li data-id="{{_id}}" class="task">
     P{{priority}}.
