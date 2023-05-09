@@ -34,8 +34,8 @@ route('settings');
 // LAYOUT
 
 Template.layout.helpers({
-
   activeRoute(path) {
+    FlowRouter.watchPathChange();
     return FlowRouter.current().path === path ? 'active' : '';
   }
 });
