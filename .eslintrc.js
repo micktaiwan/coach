@@ -48,7 +48,7 @@ module.exports = {
     'no-underscore-dangle': 0,
     'operator-linebreak': ['error', 'after'],
     'no-only-tests/no-only-tests': 'error',
-    'space-before-function-paren': ['error', 'always'],
+    'space-before-function-paren': 0,
   },
   globals: {
     FlowRouter: 'readonly',
