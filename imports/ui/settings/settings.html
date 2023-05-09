@@ -1,8 +1,6 @@
 <template name="settings">
-  <h2>Settings</h2>
-
+  <h1><span class="material-icons-outlined">settings</span> Settings</h1>
   <h3>OpenAI</h3>
-
   <form class="form js-set-api-key">
     <div>
       <label for="api-key">API Key:</label>
@@ -15,8 +13,8 @@
     </div>
     <div>
       <select id="model">
-        <option value="gpt-3.5-turbo" {{selectedModel 'gpt-3.5-turbo'}}>gpt-3.5-turbo</option>
-        <option value="gpt-4" {{selectedModel 'gpt-4'}}>gpt-4</option>
+        <option value="gpt-3.5-turbo" {{selectedModel 'gpt-3.5-turbo' }}>gpt-3.5-turbo</option>
+        <option value="gpt-4" {{selectedModel 'gpt-4' }}>gpt-4</option>
       </select>
     </div>
     <div></div>
@@ -24,32 +22,22 @@
       <button type="submit" class="btn btn-primary">Save</button>
     </div>
   </form>
-
   {{#unless Session 'contextId'}}
-
-  <p class="mt-5">
-    Please select a context to edit import/export settings.
-  </p>
-
+    <p class="mt-5">
+      Please select a context to edit import/export settings.
+    </p>
   {{else}}
-
-  <h3>Exports</h3>
-  <button class="js-export-tasks btn btn-primary">Export Tasks</button>
-  <button class="js-export-contexts btn btn-primary">Export Primary Contexts</button>
-
-  <h3>Imports</h3>
-
-  <h4>Tasks</h4>
-  <p>Paste JSON</p>
-  <textarea id="import-tasks" rows="6" cols="100"></textarea>
-  <button class="js-import-tasks btn btn-primary">Import Tasks</button>
-
-
-  <h4>Primary Contexts</h4>
-  <p>Paste JSON</p>
-  <textarea id="import-primary-contexts" rows="6" cols="100"></textarea>
-  <button class="js-import-primary-contexts btn btn-primary">Import Primary Contexts</button>
-
+    <h3>Exports</h3>
+    <button class="js-export-tasks btn btn-primary">Export Tasks</button>
+    <button class="js-export-contexts btn btn-primary">Export Primary Contexts</button>
+    <h3>Imports</h3>
+    <h4>Tasks</h4>
+    <p>Paste JSON</p>
+    <textarea id="import-tasks" rows="6" cols="100"></textarea>
+    <button class="js-import-tasks btn btn-primary">Import Tasks</button>
+    <h4>Primary Contexts</h4>
+    <p>Paste JSON</p>
+    <textarea id="import-primary-contexts" rows="6" cols="100"></textarea>
+    <button class="js-import-primary-contexts btn btn-primary">Import Primary Contexts</button>
   {{/unless}}
-
 </template>

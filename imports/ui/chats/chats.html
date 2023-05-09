@@ -1,19 +1,16 @@
 <template name="chats">
+  <h1><span class="material-icons-outlined">question_answer</span> Chats</h1>
   <div class="chats">
     {{#each chats}}
       {{> chat}}
     {{/each}}
-
     {{> loadingAnswer}}
-  
     <form id="chat-form">
-      <textarea rows="5" cols="80" type="text" name="message" placeholder="Type to send new message"></textarea><br>
+      <textarea name="message" class="form-control" placeholder="Type to send new message" rows="5"></textarea><br>
       <button class="js-send-message btn btn-primary">Send</button>
     </form>
-
   </div>
 </template>
-
 <template name="chat">
   <div class="chat {{role}}">
     <div class="buttons">
@@ -27,11 +24,10 @@
     <div class="message">{{{content}}}</div>
   </div>
 </template>
-
 <template name="loadingAnswer">
   {{#if Session 'loadingAnswer'}}
     <div class="chat assistant loading-answer">
-      <div class="role">assistant</div>    
+      <div class="role">assistant</div>
       <div class="date">{{formatDate now}}</div>
       <div class="message"><i class="fa fa-spinner fa-spin"></i></div>
     </div>

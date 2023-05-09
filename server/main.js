@@ -1,5 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 
+// head
+
+import './head.js';
+
 // tasks
 import '../imports/api/tasks/methods.js';
 import '../imports/api/tasks/publish.js';
