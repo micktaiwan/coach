@@ -10,6 +10,7 @@
     </form>
   </div>
 </template>
+
 <template name="chat">
   <div class="chat {{role}}">
     <div class="buttons">
@@ -23,6 +24,7 @@
     <div class="message">{{{content}}}</div>
   </div>
 </template>
+
 <template name="loadingAnswer">
   {{#if Session 'loadingAnswer'}}
     <div class="chat assistant loading-answer">
