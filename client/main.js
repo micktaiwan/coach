@@ -1,8 +1,8 @@
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { Contexts } from '../imports/api/contexts/collections';
 import { UsageStats } from '../imports/api/open-ai/collections';
+
 
 import '../imports/ui/helpers';
 import '../imports/ui/tasks/tasks';
@@ -10,25 +10,9 @@ import '../imports/ui/contexts/contexts';
 import '../imports/ui/chats/chats';
 import '../imports/ui/settings/settings';
 
+import './routes';
+import '../imports/ui/dyn-contexts/dyn-contexts';
 import './main.html';
-
-const route = name => FlowRouter.route(`/${name}`, {
-  name,
-  action () {
-    BlazeLayout.render('layout', { main: name });
-  },
-});
-
-FlowRouter.route('/', {
-  name: 'home',
-  action () {
-    BlazeLayout.render('layout', { main: 'home' });
-  },
-});
-
-route('contexts');
-route('tasks');
-route('settings');
 
 // LAYOUT
 
@@ -71,6 +55,7 @@ Template.home.events({
       Session.set('loadingAnswer', false);
     });
   },
+
 });
 
 Template.usageStats.onCreated(function () {
@@ -111,5 +96,19 @@ Template.contextSelect.events({
       return;
     }
     Session.set('contextId', contextId);
+  },
+});
+
+
+Template.layout.events({
+  'click .js-add-dyn-context' (event) {
+    event.preventDefault();
+    const name = prompt('Enter a name for the new context');
+    if (name) {
+      Meteor.call('addDynContext', name, (err, res) => {
+        console.log('addDynContext', err, res);
+        if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
+      });
+    }
   },
 });
