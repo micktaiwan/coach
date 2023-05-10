@@ -1,14 +1,14 @@
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
-import { Contexts } from '../imports/api/contexts/collections.js';
-import { UsageStats } from '../imports/api/open-ai/collections.js';
+import { Contexts } from '../imports/api/contexts/collections';
+import { UsageStats } from '../imports/api/open-ai/collections';
 
-import '../imports/ui/helpers.js';
-import '../imports/ui/tasks/tasks.js';
-import '../imports/ui/contexts/contexts.js';
-import '../imports/ui/chats/chats.js';
-import '../imports/ui/settings/settings.js';
+import '../imports/ui/helpers';
+import '../imports/ui/tasks/tasks';
+import '../imports/ui/contexts/contexts';
+import '../imports/ui/chats/chats';
+import '../imports/ui/settings/settings';
 
 import './main.html';
 
@@ -40,7 +40,7 @@ Template.layout.helpers({
 });
 
 Template.home.events({
-  'click .js-remove-all-chats' (event, instance) {
+  'click .js-remove-all-chats' (event) {
     event.preventDefault();
     if (confirm('Are you sure?')) {
       Meteor.call('removeAllChats', Session.get('contextId'), (err, res) => {
@@ -49,7 +49,7 @@ Template.home.events({
     }
   },
 
-  'click .js-find-priority' (event, instance) {
+  'click .js-find-priority' (event) {
     event.preventDefault();
     const prompt =
       'Find the priorities among my current tasks and justify them with pros and cons.\n' +
