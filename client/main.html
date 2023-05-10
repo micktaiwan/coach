@@ -23,6 +23,7 @@
     </div>
   </nav>
 </template>
+
 <template name="layout">
   <div id="layout">
     {{> header}}
@@ -33,8 +34,10 @@
             <li class="nav-item"><a class="nav-link {{activeRoute '/'}}" aria-current="page" href="/"><span class="material-icons-outlined">question_answer</span> Chats </a></li>
             <li class="nav-item"><a class="nav-link {{activeRoute '/tasks'}}" aria-current="page" href="/tasks"><span class="material-icons-outlined">task</span> Tasks </a></li>
             <li class="nav-item"><a class="nav-link {{activeRoute '/contexts'}}" aria-current="page" href="/contexts"><span class="material-icons-outlined">description</span> Context </a></li>
+            {{> dynContexts}}
             <li class="nav-item"><a class="nav-link {{activeRoute '/settings'}}" aria-current="page" href="/settings"><span class="material-icons-outlined">settings</span> Settings </a></li>
           </ul>
+          <button class="js-add-dyn-context btn btn-primary">Add context</button>
         </nav>
         <main class="col-9 ms-sm-auto col-lg-10 px-md-4">
           {{#unless currentUser}}
@@ -61,6 +64,7 @@
     </footer>
   </div>
 </template>
+
 <template name="home">
   <h1><span class="material-icons-outlined">question_answer</span> Chats</h1>
   <button class="js-remove-all-chats btn btn-danger">Remove All Chats</button>
@@ -75,6 +79,7 @@
   {{> chats}}
   {{> usageStats}}
 </template>
+
 <template name="usageStats">
   <div class="stats">
     {{#each usageStats}}
@@ -83,6 +88,7 @@
     {{/each}}
   </div>
 </template>
+
 <template name="contextSelect">
   <select name="context-select">
     <option value="">Select a context</option>
