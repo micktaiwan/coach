@@ -6,10 +6,7 @@
       {{> context}}
     {{/each}}
   </ul>
-  <form id="context-form">
-    <textarea name="text" placeholder="Type to add new context" rows="3" cols="100"></textarea><br>
-    <button class="btn btn-primary js-add-context">Add Context</button>
-  </form>
+  {{> addPrimaryContext}}
 </template>
 
 <template name="context">

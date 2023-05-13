@@ -2,7 +2,13 @@ import { PrimaryContexts } from './collections';
 
 Meteor.methods({
   addPrimaryContext(context, contextId) {
-    check(context, { text: String, createdAt: Match.Optional(Date), status: Match.Optional(String), priority: Match.Optional(Number) });
+    check(context, {
+      text: String,
+      createdAt: Match.Optional(Date),
+      status: Match.Optional(String),
+      priority: Match.Optional(Number),
+      dynContextId: Match.Optional(String),
+    });
     check(contextId, String);
 
     PrimaryContexts.insert({
@@ -12,6 +18,7 @@ Meteor.methods({
       createdAt: context.createdAt || new Date(),
       status: context.status || 'open',
       priority: context.priority || PrimaryContexts.find({ contextId }).count(),
+      dynContextId: context.dynContextId,
     });
   },
 

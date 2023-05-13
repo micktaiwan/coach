@@ -16,11 +16,15 @@ FlowRouter.route('/', {
   },
 });
 
+let dynContextHandle;
 FlowRouter.route('/dyn-contexts/:_id', {
   name: 'dynContexts',
   action(params) {
-    const data = DynContexts.findOne(params._id);
-    this.render('layout', { main: 'dynContext', data });
+    if(dynContextHandle) dynContextHandle.stop();
+    dynContextHandle = Meteor.subscribe('dynContexts', params._id, () => {
+      const data = DynContexts.findOne(params._id);
+      this.render('layout', { main: 'dynContext', data });
+    });
   },
 });
 

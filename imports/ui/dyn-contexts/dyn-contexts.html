@@ -5,10 +5,22 @@
 </template>
 
 <template name="dynContextMenu">
-  <li class="nav-item"><a class="nav-link {{activeRoute '/dyn-contexts'}}" aria-current="page" href="/dyn-contexts/{{_id}}"><span class="material-icons-outlined">description</span> {{name}} </a></li>
+  <li class="nav-item">
+    <a class="nav-link {{activeRoute _id}}" aria-current="page" href="/dyn-contexts/{{_id}}">
+      <span class="material-icons-outlined">description</span>
+      {{name}}
+    </a>
+  </li>
 </template>
 
 <template name="dynContext">
-  name: {{data.name}}<br>
-  _id: {{data._id}}<br>
+  <h1>{{data.name}}</h1>
+
+  <ul>
+    {{#each primaryContexts}}
+      {{> context}}
+    {{/each}}
+  </ul>
+
+  {{> addPrimaryContext dynContextId=data._id}}
 </template>
