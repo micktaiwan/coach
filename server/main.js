@@ -33,7 +33,7 @@ import '../imports/api/dynamicContexts/collections';
 import '../imports/api/settings/methods';
 
 // users
-import '../imports/api/users/publish';
+import '../imports/api/users/server/main';
 
 // OpenAI
 import '../imports/api/open-ai/methods';
