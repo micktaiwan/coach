@@ -7,7 +7,12 @@
 	],
 	"settings": {
 		"cSpell.words": [
-			"autorun"
+			"autorun",
+			"dburles",
+			"jquery",
+			"meteorhacks",
+			"minifier",
+			"ostrio"
 		]
 	}
 }
