@@ -19,15 +19,10 @@ FlowRouter.route('/', {
   },
 });
 
-let dynContextHandle;
 FlowRouter.route('/dyn-contexts/:_id', {
   name: 'dynContexts',
-  action(params) {
-    if (dynContextHandle) dynContextHandle.stop();
-    dynContextHandle = Meteor.subscribe('dynContexts', params._id, () => {
-      const data = DynContexts.findOne(params._id);
-      BlazeLayout.render('layout', { main: 'dynContext', data });
-    });
+  action() {
+    BlazeLayout.render('layout', { main: 'dynContext' });
   },
 });
 
