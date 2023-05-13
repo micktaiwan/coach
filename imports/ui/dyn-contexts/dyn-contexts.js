@@ -1,4 +1,4 @@
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { DynContexts } from '../../api/dynamicContexts/collections';
 import { PrimaryContexts } from '../../api/primary-contexts/collections';
 
@@ -28,7 +28,6 @@ Template.dynContext.onCreated(function () {
 
 Template.dynContext.helpers({
   primaryContexts() {
-    // console.log('primaryContexts', this.data._id);
     return PrimaryContexts.find({ dynContextId: this.data._id }, { sort: { priority: 1 } });
   },
 });
