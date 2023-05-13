@@ -1,23 +1,24 @@
-import { PrimaryContexts } from '../../api/primary-contexts/collections.js';
 import Sortable from 'sortablejs/modular/sortable.complete.esm.js';
+import { PrimaryContexts } from '../../api/primary-contexts/collections.js';
 
 import { exportCollection } from '../../api/helpers.js';
 
+import './addPrimaryContext';
 import './contexts.html';
 
 Template.contexts.onCreated(function () {
   this.autorun(() => {
-    this.subscribe('primary_contexts', Session.get('contextId'));
+    this.subscribe('primary_contexts', Session.get('contextId'), undefined);
   });
 });
 
-Template.contexts.onRendered(function () {
+Template.contexts.onRendered(() => {
   const el = document.getElementById('contexts');
   const sortable = Sortable.create(el, {
-    onEnd: function (event) {
+    onEnd (event) {
       const sortedIds = sortable.toArray();
 
-      sortedIds.forEach(function (id, index) {
+      sortedIds.forEach((id, index) => {
         Meteor.call('updateContext', id, { priority: index });
       });
     },
@@ -26,33 +27,8 @@ Template.contexts.onRendered(function () {
 
 Template.contexts.helpers({
   contexts() {
-    return PrimaryContexts.find({contextId: Session.get('contextId')}, { sort: { priority: 1 } });
+    return PrimaryContexts.find({ contextId: Session.get('contextId') }, { sort: { priority: 1 } });
   },
-});
-
-Template.contexts.events({
-  'click .js-add-context'(event, instance) {
-    event.preventDefault();
-    const form = instance.find('#context-form');
-    const inputs = form.querySelectorAll('input, textarea');
-    const context = {};
-
-    inputs.forEach((input) => {
-      context[input.name] = input.value;
-    });
-
-    if (context.text === '') return;
-
-    Meteor.call('addPrimaryContext', context, Session.get('contextId'), (err, res) => {
-      if (err) {
-        alert(err);
-      } else {
-        form.reset();
-        inputs[0].focus();
-      }
-    });
-  },
-
 });
 
 Template.context.helpers({
@@ -75,14 +51,14 @@ Template.context.events({
     Meteor.call('deleteContext', this._id);
   },
 
-  'keydown span[contenteditable]': function (event, template) {
+  'keydown span[contenteditable]' (event, template) {
     if (event.keyCode === 13) {
       event.preventDefault();
       event.currentTarget.blur();
     }
   },
 
-  'blur span[contenteditable]': function (event, template) {
+  'blur span[contenteditable]' (event, template) {
     const newText = event.currentTarget.textContent.trim();
     if (newText !== '') Meteor.call('editContextText', this._id, newText);
     else event.currentTarget.textContent = this.text;

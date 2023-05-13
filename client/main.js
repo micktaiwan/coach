@@ -30,7 +30,7 @@ Template.contextSelect.events({
     const contextId = event.target.value;
     if (!contextId) return;
 
-    console.log('contextId', contextId);
+    // console.log('contextId', contextId);
 
     if (contextId === 'new') {
       const name = prompt('Enter a name for the new context:', '');
