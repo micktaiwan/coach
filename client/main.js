@@ -1,7 +1,6 @@
 import { Template } from 'meteor/templating';
 import { Contexts } from '../imports/api/contexts/collections';
 
-
 import '../imports/ui/helpers';
 import '../imports/ui/home/home';
 import '../imports/ui/tasks/tasks';
@@ -12,13 +11,6 @@ import '../imports/ui/settings/settings';
 import './routes';
 import '../imports/ui/dyn-contexts/dyn-contexts';
 import './layout/layout';
-
-// LAYOUT
-
-
-
-
-
 
 Template.contextSelect.onCreated(function () {
   this.autorun(() => {

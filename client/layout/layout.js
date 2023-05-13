@@ -18,7 +18,6 @@ Template.layout.helpers({
 
 
 Template.layout.events({
-
   'click #collaspe-view'() {
     document.body.classList.toggle('sidebar-collapse');
   },
