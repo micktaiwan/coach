@@ -1,4 +1,4 @@
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import './header.html';
 import './footer.html';
@@ -15,7 +15,6 @@ Template.layout.helpers({
     return FlowRouter.current().path === path;
   },
 });
-
 
 Template.layout.events({
   'click #collaspe-view'() {

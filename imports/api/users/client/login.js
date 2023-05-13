@@ -1,11 +1,11 @@
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import './login.html';
 
-Template.login.onCreated(function () { });
+Template.login.onCreated(() => { });
 
-Template.login.onRendered(function () { });
+Template.login.onRendered(() => { });
 
-Template.login.onDestroyed(function () { });
+Template.login.onDestroyed(() => { });
 
 Template.login.helpers({});
 
@@ -30,12 +30,10 @@ Template.login.events({
               });
             }
           });
-        }
-        else {
+        } else {
           alert(err.reason);
         }
-      }
-      else {
+      } else {
         FlowRouter.go('/');
       }
     });
