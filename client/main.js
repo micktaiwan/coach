@@ -45,9 +45,9 @@ Template.contextSelect.events({
 Template.layout.events({
   'click .js-add-dyn-context'(event) {
     event.preventDefault();
-    const name = prompt('Enter a name for the new dyn context');
+    const name = prompt('Enter a name for the new context');
     if (name) {
-      Meteor.call('addDynContext', name, (err, res) => {
+      Meteor.call('addDynContext', name, Session.get('contextId'), (err, res) => {
         console.log('addDynContext', err, res);
         if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
       });

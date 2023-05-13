@@ -14,13 +14,15 @@
 </template>
 
 <template name="dynContext">
-  <h1>{{data.name}}</h1>
+  {{#with dynContext}}
+    <h1>{{name}}</h1>
 
-  <ul>
-    {{#each primaryContexts}}
-      {{> context}}
-    {{/each}}
-  </ul>
+    <ul>
+      {{#each primaryContexts}}
+        {{> context}}
+      {{/each}}
+    </ul>
 
-  {{> addPrimaryContext dynContextId=data._id}}
+    {{> addPrimaryContext dynContextId=_id}}
+  {{/with}}
 </template>

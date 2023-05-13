@@ -10,7 +10,7 @@ Template.dynContexts.onCreated(function () {
 
 Template.dynContexts.helpers({
   dynContexts() {
-    return DynContexts.find({ userId: Meteor.userId() }, { sort: { createdAt: 1 } });
+    return DynContexts.find({ userId: Meteor.userId(), contextId: Session.get('contextId') }, { sort: { createdAt: 1 } });
   },
 });
 
@@ -22,12 +22,15 @@ Template.dynContextMenu.helpers({
 
 Template.dynContext.onCreated(function () {
   this.autorun(() => {
-    this.subscribe('primary_contexts', Session.get('contextId'), this.data.data?._id);
+    this.subscribe('primary_contexts', Session.get('contextId'), FlowRouter.getParam('_id'));
   });
 });
 
 Template.dynContext.helpers({
+  dynContext() {
+    return DynContexts.findOne({ _id: FlowRouter.getParam('_id') });
+  },
   primaryContexts() {
-    return PrimaryContexts.find({ dynContextId: this.data._id }, { sort: { priority: 1 } });
+    return PrimaryContexts.find({ dynContextId: this._id }, { sort: { priority: 1 } });
   },
 });
