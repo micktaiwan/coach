@@ -1,10 +1,8 @@
-import { PrimaryContexts } from './collections.js';
-import _ from 'underscore';
+import { PrimaryContexts } from './collections';
 
 Meteor.methods({
-  addPrimaryContext: function(context, contextId) {
-    check(context, Object);
-    check(context.text, String);
+  addPrimaryContext(context, contextId) {
+    check(context, { text: String, createdAt: Match.Optional(Date), status: Match.Optional(String), priority: Match.Optional(Number) });
     check(contextId, String);
 
     PrimaryContexts.insert({
@@ -13,25 +11,25 @@ Meteor.methods({
       text: context.text,
       createdAt: context.createdAt || new Date(),
       status: context.status || 'open',
-      priority: context.priority || PrimaryContexts.find({contextId: contextId}).count(),
+      priority: context.priority || PrimaryContexts.find({ contextId }).count(),
     });
   },
 
-  deleteContext: function(contextId) {
+  deleteContext(contextId) {
     check(contextId, String);
     PrimaryContexts.remove(contextId);
   },
 
-  updateContext: function(contextId, data) {
+  updateContext(contextId, data) {
     check(contextId, String);
     check(data, Object);
     PrimaryContexts.update(contextId, { $set: data });
   },
 
-  editContextText: function(contextId, text) {
+  editContextText(contextId, text) {
     check(contextId, String);
     check(text, String);
-    PrimaryContexts.update(contextId, { $set: { text: text } });
-  }
+    PrimaryContexts.update(contextId, { $set: { text } });
+  },
 
 });
