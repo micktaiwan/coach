@@ -1,0 +1,32 @@
+<template name="layout">
+  <div id="layout">
+    {{> header}}
+    <nav id="sidebar-menu">
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link {{activeRoute '/'}}" aria-current="page" href="/"><span class="material-icons-outlined">question_answer</span> <span class="nav-link-text">Chats</span></a></li>
+        <li class="nav-item"><a class="nav-link {{activeRoute '/tasks'}}" aria-current="page" href="/tasks"><span class="material-icons-outlined">task</span> <span class="nav-link-text">Tasks</span></a></li>
+        <li class="nav-item"><a class="nav-link {{activeRoute '/contexts'}}" aria-current="page" href="/contexts"><span class="material-icons-outlined">description</span> <span class="nav-link-text">Context</span></a></li>
+        {{> dynContexts}}
+        <li class="nav-item"><a class="nav-link {{activeRoute '/settings'}}" aria-current="page" href="/settings"><span class="material-icons-outlined">settings</span> <span class="nav-link-text">Settings</span></a></li>
+      </ul>
+      <button class="js-add-dyn-context btn btn-primary"><span class="material-icons-outlined right">add_circle</span> <span class="nav-link-text">Add context</span></button>
+      <div id="collaspe-view"><a class="clickable"><span class="material-icons-outlined left">arrow_left</span> <span class="material-icons-outlined right">arrow_right</span> <span class="nav-link-text">Collapsed View</span></a></div>
+    </nav>
+    <main>
+      {{#if activeRouteBoolean '/login'}}
+        {{> Template.dynamic template=main}}
+      {{else}}
+        {{#unless currentUser}}
+          <div class="h-100 text-center"> <a href="/login" class="alert alert-info" role="alert">Please login</a></div>
+        {{else}}
+          {{#unless Session 'contextId'}}
+            <div class="text-center"> <span class="alert alert-info" role="alert">Please select a context</span></div>
+          {{else}}
+            {{> Template.dynamic template=main}}
+          {{/unless}}
+        {{/unless}}
+      {{/if}}
+    </main>
+    {{> footer}}
+  </div>
+</template>

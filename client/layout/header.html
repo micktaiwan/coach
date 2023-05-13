@@ -1,0 +1,29 @@
+<template name="header">
+  <header>
+    <div class="h-100 d-flex justify-content-between align-items-center">
+      <div>
+        <a href="/" class="ms-3"><img src="/logo.png" class="logo"> Coach</a>
+      </div>
+      <div>
+        {{#if currentUser}}
+          {{> contextSelect}}
+        {{/if}}
+      </div>
+      <div>
+        {{#if currentUser}}
+          <a class="nav-link me-3" onClick="Meteor.logout()">Logout</a>
+        {{/if}}
+      </div>
+    </div>
+  </header>
+</template>
+
+<template name="contextSelect">
+  <select name="context-select">
+    <option value="">Select a context</option>
+    {{#each contexts}}
+      <option value="{{_id}}">{{name}}</option>
+    {{/each}}
+    <option value="new">New context</option>
+  </select>
+</template>

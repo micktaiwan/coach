@@ -6,12 +6,11 @@ Template.dynContexts.onCreated(function () {
 });
 
 Template.dynContexts.helpers({
-  dynContexts () {
+  dynContexts() {
     return DynContexts.find();
   },
 
 });
-
 
 Template.dynContextMenu.helpers({
   activeRoute(route) {
