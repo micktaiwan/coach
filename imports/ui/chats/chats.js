@@ -56,8 +56,11 @@ Template.chats.events({
         Meteor.call('openaiGenerateText', Session.get('contextId'), getDynContexts(), '', '', (err2, res) => {
           if (err2) {
             console.log(err2);
-            Meteor.call('addChat', Session.get('contextId'), 'meta', err2.reason.response.data.error.message);
-          } else Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
+            if (typeof err2.reason === 'string') Meteor.call('addChat', Session.get('contextId'), 'meta', err2.reason);
+            else Meteor.call('addChat', Session.get('contextId'), 'meta', err2.reason.response.data.error.message);
+          } else {
+            Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
+          }
           Session.set('loadingAnswer', false);
         });
 
