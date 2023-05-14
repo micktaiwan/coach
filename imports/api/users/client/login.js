@@ -17,6 +17,8 @@ Template.login.events({
     const email = event.target.email.value;
     const password = event.target.password.value;
 
+    Session.set('contextId', undefined);
+
     Meteor.loginWithPassword(email, password, err => {
       if (err) {
         console.log('loginWithPassword', err);
