@@ -1,31 +1,33 @@
-import { Chats } from './collections.js';
+import { Chats } from './collections';
 
 Meteor.methods({
-  addChat: function(contextId, role, message) {
-    check(role, String); // 'user' or 'assistant'
+  addChat(contextId, role, message) {
+    check(contextId, String);
+    check(role, String); // 'user', 'assistant', 'meta'
     check(message, String);
 
-    if(!this.userId) throw new Meteor.Error('not-authorized');
-    if(!contextId) throw new Meteor.Error('no-context-id');
+    if (!this.userId) throw new Meteor.Error('not-authorized');
+    if (!contextId) throw new Meteor.Error('no-context-id');
 
     message = message.replace(/\n/g, '<br>');
 
     Chats.insert({
       userId: this.userId,
       contextId,
-      role: role,
+      role,
       content: message,
       createdAt: new Date(),
     });
   },
 
-  deleteChat: function(chatId) {
+  deleteChat(chatId) {
     check(chatId, String);
     Chats.remove(chatId);
   },
 
-  removeAllChats: function(contextId) {
-    Chats.remove({contextId, userId: this.userId});
+  removeAllChats(contextId) {
+    check(contextId, String);
+    Chats.remove({ contextId, userId: this.userId });
   },
 
 });

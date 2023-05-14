@@ -109,7 +109,7 @@ Template.task.events({
 	'click .js-plan'(event, instance) {
 		event.preventDefault();
 		const prompt = 'Suggest a step by step plan for this task. Reply in HTML format. Task:"' + this.text + '"';
-		Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {			
+		Meteor.call('openaiGenerateText', Session.get('contextId'), [], '', prompt, (err, res) => {			
 			if(err) {
 				console.log(err); 
 				Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
@@ -123,7 +123,7 @@ Template.task.events({
 		const task = this;
 		const system = 'Act as a professional english translator.\n';
 		const prompt = ' Translate in english, close to the original text. If something is not clear, leave it as it is. Do not output quotes in your answer. Do not comment your translation, just output the translation alone. Text to translate: ' + task.text;
-		Meteor.call('openaiGenerateText', Session.get('contextId'), system, prompt, (err, res) => {
+		Meteor.call('openaiGenerateText', Session.get('contextId'), [], system, prompt, (err, res) => {
 			if(err) {
 				console.log(err); 
 				Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);

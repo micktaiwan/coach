@@ -5,36 +5,49 @@ import { UsageStats } from './collections.js';
 import _ from 'underscore';
 
 
-const getSystem = contextId => {
-	const list = Tasks.find({contextId}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority + 1) + '] ' +
-	task.text +
-	' [status: ' + task.status + ']' +
-	' [createdAt: ' + task.createdAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' +
-	(task.startedAt ? ' [startedAt: ' +  task.startedAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' : '') +
-	(task.doneAt ? ' [doneAt: ' + task.doneAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' : '') 
-	).join(', ');
+const getSystem = (contextId, dynContextIds) => {
+	let tasks;
+	if(dynContextIds.includes('tasks')) {
+		tasks = Tasks.find({contextId}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority + 1) + '] ' +
+		task.text +
+		' [status: ' + task.status + ']' +
+		' [createdAt: ' + task.createdAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' +
+		(task.startedAt ? ' [startedAt: ' +  task.startedAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' : '') +
+		(task.doneAt ? ' [doneAt: ' + task.doneAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' : '') 
+		).join(', ');
+		dynContextIds = _.without(dynContextIds, 'tasks');
+	}
 	
 	const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 	const today = new Date();
 	const todayAsString = today.toLocaleDateString(undefined, options);
 
-	const context = '"' + PrimaryContexts.find({contextId}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority) + '] ' +
-	task.text).join(", ") + '"';
+	const primaryContexts = PrimaryContexts.find({contextId, dynContextId: {$exists: false}}, { sort: { priority: 1 }}).fetch();
+	for(const id in dynContextIds) {
+		const contexts = PrimaryContexts.find({dynContextId: dynContextIds[id]}).fetch();
+		if(contexts) primaryContexts.push(...contexts);
+	}
 
-	const system = 'Act as a coach. You have 30+ years of experience.\n' +
+	const context = primaryContexts.map((context) => context.text).join('\n');
+
+	let system = 'Act as a coach. You have 30+ years of experience.\n' +
 	'Today is ' + todayAsString + '.\n' +
 	'Assume that the user is your client.\n' +
 	'Any first person pronoun is your client speaking about himself.\n' +
 	'This is all the context your client gave you:\n' +
-	context + '[end of context]\n' +
-	'This context is very important and must be taken into account for each reply you provide to your client.\n' +
-	'This is the list of your client current tasks:"' + list + '"';
+	context + '\n[end of context]\n' +
+	'This context is very important and must be taken into account for each reply you provide to your client.\n';
+	
+	if (tasks) system += 	'This is the list of your client current tasks:"' + tasks + '"';
+
 	return system;
 }
 
 Meteor.methods({
 
-	openaiGenerateText(contextId, system, prompt) {
+	openaiGenerateText(contextId, dynContextIds, system, prompt) {
+		check(contextId, String);
+		check(dynContextIds, Array);
 		check(system, String);
 		check(prompt, String);
 
@@ -43,7 +56,7 @@ Meteor.methods({
 		const model = Meteor.user()?.openAI?.model || 'gpt-3.5-turbo';
 		if(!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
-		if(system === '' && contextId) system = getSystem(contextId);
+		if(system === '' && contextId) system = getSystem(contextId, dynContextIds);
 
 		const pastChats = Chats.find({contextId, role: {$ne: 'meta'}}, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
 		const messages = [
@@ -52,7 +65,7 @@ Meteor.methods({
 		];
 
 		if(prompt) messages.push({'role': 'user', 'content': prompt});
-
+		
 		console.log('prompt:', prompt);
 		console.log('messages:', messages);
 

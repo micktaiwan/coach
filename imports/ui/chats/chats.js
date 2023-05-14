@@ -1,6 +1,7 @@
 import './chats.html';
 
 import { Chats } from '../../api/chats/collections';
+import { getDynContexts } from '../helpers';
 
 let handle;
 const scrollToBottom = () => {
@@ -42,7 +43,7 @@ Template.chats.events({
         Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
         Session.set('loadingAnswer', false);
       } else {
-        Meteor.call('openaiGenerateText', Session.get('contextId'), '', '', (err2, res) => {
+        Meteor.call('openaiGenerateText', Session.get('contextId'), getDynContexts(), '', '', (err2, res) => {
           if (err2) {
             console.log(err2);
             Meteor.call('addChat', Session.get('contextId'), 'meta', err2.reason.response.data.error.message);
@@ -77,7 +78,7 @@ Template.chats.events({
     const message = 'Can you please provide additional evidence or examples to support your previous statement and further strengthen your argument?';
     Session.set('loadingAnswer', true);
     Meteor.call('addChat', Session.get('contextId'), 'user', message, () => {
-      Meteor.call('openaiGenerateText', Session.get('contextId'), '', '', (err, res) => {
+      Meteor.call('openaiGenerateText', Session.get('contextId'), getDynContexts(), '', '', (err, res) => {
         if (err) {
           console.log(err);
           Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
