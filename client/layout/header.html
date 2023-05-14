@@ -22,7 +22,7 @@
   <select name="context-select">
     <option value="">Select a environment</option>
     {{#each contexts}}
-      <option value="{{_id}}">{{name}}</option>
+      <option value="{{_id}}" {{selectedOption _id }}>{{name}}</option>
     {{/each}}
     <option value="new">New environment</option>
   </select>

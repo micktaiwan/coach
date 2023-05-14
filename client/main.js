@@ -22,6 +22,9 @@ Template.contextSelect.helpers({
   contexts() {
     return Contexts.find({}, { sort: { createdAt: 1 } });
   },
+  selectedOption(_id) {
+    return Session.get('contextId') === _id ? 'selected' : '';
+  },
 });
 
 Template.contextSelect.events({
