@@ -1,5 +1,7 @@
 
 import { UsageStats } from '../../api/open-ai/collections';
+import { getDynContexts } from '../helpers';
+
 import './home.html';
 
 Template.home.events({
@@ -24,7 +26,7 @@ Template.home.events({
       'Do not give any meta explanation of the process.\n';
     Meteor.call('addChat', Session.get('contextId'), 'user', prompt);
     Session.set('loadingAnswer', true);
-    Meteor.call('openaiGenerateText', Session.get('contextId'), '', prompt, (err, res) => {
+    Meteor.call('openaiGenerateText', Session.get('contextId'), getDynContexts(), '', '', (err, res) => {
       if (err) {
         console.log(err);
         Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
