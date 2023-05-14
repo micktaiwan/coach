@@ -1,17 +1,16 @@
-import './chats.html'
+import './chats.html';
 
-import { Chats } from '../../api/chats/collections.js';
+import { Chats } from '../../api/chats/collections';
 
 Template.chats.onCreated(function() {
   this.autorun(() => {
     this.subscribe('chats', Session.get('contextId'));
   });
-
 });
 
 Template.chats.helpers({
   chats() {
-    return Chats.find({}, { sort: { createdAt: 1 } });
+    return Chats.find({}, { sort: { createdAt: 1 } });
   },
 });
 
@@ -23,18 +22,16 @@ Template.chats.events({
     const message = form.querySelector('textarea[name="message"]').value;
     Session.set('loadingAnswer', true);
 
-    Meteor.call('addChat', Session.get('contextId'), 'user', message, (err, res) => {
+    Meteor.call('addChat', Session.get('contextId'), 'user', message, err => {
       if (err) {
         Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
         Session.set('loadingAnswer', false);
-      }
-      else {
-        Meteor.call('openaiGenerateText', Session.get('contextId'), '', '', (err, res) => {
-          if(err) {
-            console.log(err);
-            Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
-          }
-          else  Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
+      } else {
+        Meteor.call('openaiGenerateText', Session.get('contextId'), '', '', (err2, res) => {
+          if (err2) {
+            console.log(err2);
+            Meteor.call('addChat', Session.get('contextId'), 'meta', err2.reason.response.data.error.message);
+          } else Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
           Session.set('loadingAnswer', false);
         });
 
@@ -49,31 +46,47 @@ Template.chats.events({
       instance.find('.js-send-message').click();
     }
   },
-  
-  'click .js-delete-chat'(event, instance) {
+
+  'click .js-delete-chat'(event) {
     event.preventDefault();
     const chatId = this._id;
 
-    Meteor.call('deleteChat', chatId, (err, res) => {
+    Meteor.call('deleteChat', chatId, err => {
       if (err) alert(err);
     });
   },
 
-  'click .js-improve-answer'(event, instance) {
+  'click .js-improve-answer'(event) {
     event.preventDefault();
     // const message = "Let's work this out in a step by step way to be sure we have the right answer.";
-    const message = "Can you please provide additional evidence or examples to support your previous statement and further strengthen your argument?";
+    const message = 'Can you please provide additional evidence or examples to support your previous statement and further strengthen your argument?';
     Session.set('loadingAnswer', true);
-    Meteor.call('addChat', Session.get('contextId'), 'user', message, (err, res) => {
+    Meteor.call('addChat', Session.get('contextId'), 'user', message, () => {
       Meteor.call('openaiGenerateText', Session.get('contextId'), '', '', (err, res) => {
-        if(err) {
+        if (err) {
           console.log(err);
           Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
-        }
-        else  Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
+        } else Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
         Session.set('loadingAnswer', false);
       });
     });
+  },
+});
 
+Template.floatingChat.onCreated(function() {
+  this.show = new ReactiveVar(false);
+});
+
+Template.floatingChat.helpers({
+  show() {
+    return Template.instance().show.get();
+  },
+});
+
+Template.floatingChat.events({
+  'click .js-toggle-chat'(event, instance) {
+    event.preventDefault();
+    const show = instance.show.get();
+    instance.show.set(!show);
   },
 });

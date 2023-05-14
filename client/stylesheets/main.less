@@ -346,4 +346,36 @@ body {
     animation-iteration-count: infinite;
     animation-timing-function: linear;
   }
+
+  .floating-chat {
+    .close {
+      color: #fff;
+      cursor: pointer;
+    }
+    background-color: var(--color-two-lighter);
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #dcb;
+    box-shadow: 0 0 10px #000;
+    max-width: 70%;
+
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 5px;
+    z-index: 1000;
+  }
+  .floating-chat-button {
+    background-color: var(--color-two-lighter);
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 10px #000;
+
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 5px;
+    z-index: 1000;
+    cursor: pointer;
+  }
 }
