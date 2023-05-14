@@ -11,6 +11,7 @@ body {
   a {
     color: white;
   }
+
   header {
     background-color: var(--color-one-light);
     border-bottom: 1px solid var(--color-two-lighter);
@@ -22,6 +23,7 @@ body {
 
     .navbar-brand {
       color: white;
+
       &:hover,
       &:focus {
         color: white;
@@ -35,6 +37,7 @@ body {
     border-right: 1px solid var(--color-two-lighter);
     width: var(--sidebar-width);
     height: calc(100vh);
+
     .nav-item {
       .nav-link {
         color: var(--color-three);
@@ -54,6 +57,7 @@ body {
       width: var(--sidebar-width);
       border-top: 1px solid var(--color-two-lighter);
       padding: 10px;
+
       .right {
         display: none;
       }
@@ -111,6 +115,7 @@ body {
   .form-control {
     background-color: var(--color-one-light);
     color: var(--color-three);
+
     &:focus {
       background-color: var(--color-one-light);
       color: var(--color-three);
@@ -127,6 +132,7 @@ body {
 
     background-color: var(--color-one-light);
     color: var(--color-three);
+
     &:focus {
       background-color: var(--color-one-light);
       color: var(--color-three);
@@ -291,6 +297,7 @@ body {
   &.sidebar-collapse {
     #sidebar-menu {
       width: var(--sidebar-collapsed-width);
+
       a {
         padding: 10px 5px;
         text-align: center;
@@ -299,9 +306,11 @@ body {
       #collaspe-view {
         width: var(--sidebar-collapsed-width);
         padding: 10px 5px;
+
         .left {
           display: none;
         }
+
         .right {
           display: inline-block;
         }
@@ -319,5 +328,22 @@ body {
     footer {
       left: var(--sidebar-collapsed-width);
     }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .spin {
+    animation-name: spin;
+    animation-duration: 4000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
   }
 }
