@@ -21,7 +21,13 @@
           <div class="h-100 text-center"> <a href="/login" class="alert alert-info" role="alert">Please login</a></div>
         {{else}}
           {{#unless Session 'contextId'}}
-            <div class="text-center"> <span class="alert alert-info" role="alert">Please select a context</span></div>
+          <h1>Environments and contexts</h1>
+          <p>The global environment refers to the general setting or situation in which you are working. This could be anything from your personal life to your professional career. By selecting a global environment in the Coach app, you are telling the AI what general context to take into account when providing coaching advice.</p>
+
+            <p>Contexts, on the other hand, are more specific pieces of information that you want the AI to consider when answering your questions. These could be things like a current project you're working on or a particular challenge you're facing.</p>
+            <p>When opening the chat window on a context page, you are providing even more specific information for the AI to consider when providing coaching advice.</p>
+            
+            <div class="text-center mt-5"><span class="alert alert-info" role="alert">Please select a environment</span></div>
           {{else}}
             {{> Template.dynamic template=main}}
             {{> floatingChat}}
