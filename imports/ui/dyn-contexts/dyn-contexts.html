@@ -5,10 +5,10 @@
 </template>
 
 <template name="dynContextMenu">
-  <li class="nav-item">
+  <li class="nav-item" title="{{name}}">
     <a class="nav-link {{activeRoute _id}}" aria-current="page" href="/dyn-contexts/{{_id}}">
       <span class="material-icons-outlined">description</span>
-      {{name}}
+      <span class="nav-link-text">{{name}}</span>
     </a>
   </li>
 </template>
