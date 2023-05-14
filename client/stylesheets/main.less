@@ -12,6 +12,10 @@ body {
     color: white;
   }
 
+  .text-muted {
+    color: #888 !important;
+  }
+
   header {
     background-color: var(--color-one-light);
     border-bottom: 1px solid var(--color-two-lighter);
@@ -37,13 +41,14 @@ body {
     border-right: 1px solid var(--color-two-lighter);
     width: var(--sidebar-width);
     height: calc(100vh);
+    padding: 10px;
 
     .nav-item {
       .nav-link {
         color: var(--color-three);
         font-size: 1em;
         margin: 0;
-        padding: 10px 10px;
+        padding: 5px 0;
 
         &.active {
           color: white;
@@ -189,6 +194,9 @@ body {
 
   #task-form {
     margin-bottom: 10px;
+    [name="text"] {
+      width: 100%;
+    }
   }
 
   .task,

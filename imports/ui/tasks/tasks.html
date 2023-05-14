@@ -4,11 +4,13 @@
   <ul id="tasks">
     {{#each tasks}}
       {{> task}}
+    {{else}}
+      <li>No tasks yet</li>
     {{/each}}
   </ul>
-  <form id="task-form">
-    <input size="100" type="text" name="text" placeholder="Type to add new tasks" />
-    <button class="js-add-task btn btn-primary">Add Task</button>
+  <form id="task-form" class="mt-5">
+    <input type="text" name="text" placeholder="Type to add new tasks" />
+    <button class="js-add-task btn btn-primary mt-1">Add Task</button>
   </form>
 </template>
 <template name="task">

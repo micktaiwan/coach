@@ -24,7 +24,7 @@ module.exports = {
     quotes: ['error', 'single', { allowTemplateLiterals: true }],
     'object-shorthand': ['error', 'always'],
     'newline-per-chained-call': 0,
-    // "no-lonely-if": 0,
+    // 'no-lonely-if': 0,
     'prefer-destructuring': ['error', { object: true, array: false }],
     'no-empty': ['error', { allowEmptyCatch: true }],
     'no-console': 0,
@@ -49,6 +49,7 @@ module.exports = {
     'operator-linebreak': ['error', 'after'],
     'no-only-tests/no-only-tests': 'error',
     'space-before-function-paren': 0,
+    curly: ['error', 'multi-line'],
   },
   globals: {
     FlowRouter: 'readonly',

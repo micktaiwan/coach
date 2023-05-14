@@ -10,10 +10,16 @@
         {{> dynContexts}}
         <li class="nav-item"><a class="nav-link {{activeRoute '/settings'}}" aria-current="page" href="/settings"><span class="material-icons-outlined">settings</span> <span class="nav-link-text">Settings</span></a></li>
       </ul>
-      <button class="js-add-dyn-context btn btn-primary"><span class="material-icons-outlined right">add_circle</span> <span class="nav-link-text">Add context</span></button>
+      <button class="js-add-dyn-context btn btn-primary mt-3 p-1"><span class="material-icons-outlined right">add_circle</span> <span class="nav-link-text">Add context</span></button>
+      {{#unless currentUser.openAI.apiKey}}
+        <p class="text-muted mt-5 m-2">
+          Enter your OpenAI API key in Settings to use the Chat feature.
+        </p>
+      {{/unless}}
+
       <div id="collaspe-view"><a class="clickable"><span class="material-icons-outlined left">arrow_left</span> <span class="material-icons-outlined right">arrow_right</span> <span class="nav-link-text text-dark">Collapsed View</span></a></div>
     </nav>
-    <main>
+    <main>  
       {{#if activeRouteBoolean '/login'}}
         {{> Template.dynamic template=main}}
       {{else}}
