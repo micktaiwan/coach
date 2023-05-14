@@ -2,9 +2,24 @@ import './chats.html';
 
 import { Chats } from '../../api/chats/collections';
 
+let handle;
+const scrollToBottom = () => {
+  if (handle) Meteor.clearTimeout(handle);
+  handle = Meteor.setTimeout(() => {
+    const chats = document.querySelector('.chats');
+    if (chats) chats.scrollTop = chats.scrollHeight;
+  }, 100);
+};
+
 Template.chats.onCreated(function() {
   this.autorun(() => {
     this.subscribe('chats', Session.get('contextId'));
+    // when detecting that theres more documents in the Chats collection then scroll to bottom
+    Chats.find().observeChanges({
+      added() {
+        scrollToBottom();
+      },
+    });
   });
 });
 
@@ -79,7 +94,9 @@ Template.floatingChat.onCreated(function() {
 
 Template.floatingChat.helpers({
   show() {
-    return Template.instance().show.get();
+    const show = Template.instance().show.get();
+    if (show) scrollToBottom();
+    return show;
   },
 });
 
