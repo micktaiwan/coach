@@ -20,10 +20,10 @@
 
 <template name="contextSelect">
   <select name="context-select">
-    <option value="">Select a context</option>
+    <option value="">Select a environment</option>
     {{#each contexts}}
       <option value="{{_id}}">{{name}}</option>
     {{/each}}
-    <option value="new">New context</option>
+    <option value="new">New environment</option>
   </select>
 </template>
