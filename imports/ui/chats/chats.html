@@ -5,13 +5,18 @@
       <div class="message"> Welcome to Coach! How can I help you ?</div>
     </div>
     {{#each chats}}
-    {{> chat}}
+      {{> chat}}
     {{/each}}
     {{> loadingAnswer}}
     <form id="chat-form">
       <textarea name="message" class="form-control" placeholder="Type to send new message" rows="3"></textarea>
       <button class="js-send-message btn btn-primary mt-1">Send</button>
     </form>
+    
+    <div class="contexts">
+      Context: {{contexts}}
+    </div>
+
   </div>
 </template>
 

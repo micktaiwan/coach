@@ -1,6 +1,7 @@
 import './chats.html';
 
 import { Chats } from '../../api/chats/collections';
+import { DynContexts } from '../../api/dynamicContexts/collections';
 import { getDynContexts } from '../helpers';
 
 let handle;
@@ -27,6 +28,15 @@ Template.chats.onCreated(function() {
 Template.chats.helpers({
   chats() {
     return Chats.find({}, { sort: { createdAt: 1 } });
+  },
+  contexts() {
+    const contexts = ['Main'];
+    contexts.push(...getDynContexts());
+    return contexts.map(context => {
+      if (context === 'Main') return 'Main';
+      if (context === 'tasks') return 'Tasks';
+      return DynContexts.findOne(context).name;
+    }).join(', ');
   },
 });
 
