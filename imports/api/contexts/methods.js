@@ -1,13 +1,13 @@
-import { Contexts } from './collections.js';
+import { Contexts } from './collections';
 
 Meteor.methods({
-  addContext: function(name) {
+  addContext(name) {
     check(name, String);
 
-    Contexts.insert({
+    return Contexts.insert({
       userId: this.userId,
       name,
       createdAt: new Date(),
     });
-  }
+  },
 });
