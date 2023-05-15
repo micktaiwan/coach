@@ -36,7 +36,8 @@ Template.contextSelect.events({
     // console.log('contextId', contextId);
 
     if (contextId === 'new') {
-      const name = prompt('Enter a name for the new context:', '');
+      const name = prompt('Enter a name for the new environment:', '');
+      if (!name) return;
       Meteor.call('addContext', name, (err, _id) => {
         if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
         else Session.set('contextId', _id);
