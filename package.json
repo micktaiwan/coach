@@ -2,12 +2,14 @@
   "name": "coach",
   "private": true,
   "scripts": {
-    "start": "meteor run",
+    "start": "meteor run --settings settings.json",
     "test": "meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },
   "dependencies": {
+    "@babel/core": "^7.21.8",
+    "@babel/eslint-parser": "^7.21.8",
     "@babel/runtime": "^7.17.9",
     "@pinecone-database/pinecone": "^0.1.5",
     "eslint-plugin-meteor": "^7.3.0",
