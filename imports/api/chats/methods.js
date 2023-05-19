@@ -1,4 +1,5 @@
 import { Chats } from './collections';
+import { pinecone } from '../pinecone/pinecone';
 
 Meteor.methods({
   addChat(contextId, role, message) {
@@ -18,6 +19,10 @@ Meteor.methods({
       content: message,
       createdAt: new Date(),
     });
+
+    // Pinecone
+    const id = pinecone.addChat(contextId, role, message);
+    console.log('Pinecone chat id:', id);
   },
 
   deleteChat(chatId) {

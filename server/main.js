@@ -40,6 +40,9 @@ import '../imports/api/open-ai/methods';
 import '../imports/api/open-ai/publish';
 import '../imports/api/open-ai/collections';
 
+// pinecone
+import '../imports/api/pinecone/pinecone';
+
 Meteor.startup(() => {
   // code to run on server at startup
   Tasks.update({ userId: { $exists: false } }, { $set: { userId: 'roipiTkx5MQqnbQo7' } }, { multi: true });
