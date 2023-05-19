@@ -1,107 +1,107 @@
-import { Tasks } from '../tasks/collections.js';
-import { PrimaryContexts } from '../primary-contexts/collections.js';
-import { Chats } from '../chats/collections.js';
-import { UsageStats } from './collections.js';
 import _ from 'underscore';
+import { Tasks } from '../tasks/collections';
+import { PrimaryContexts } from '../primary-contexts/collections';
+import { Chats } from '../chats/collections';
+import { UsageStats } from './collections';
 
 
 const getSystem = (contextId, dynContextIds) => {
-	let tasks;
-	if(dynContextIds.includes('tasks')) {
-		tasks = Tasks.find({contextId}, { sort: { priority: 1 }}).map((task) => '[' + (task.priority + 1) + '] ' +
-		task.text +
-		' [status: ' + task.status + ']' +
-		' [createdAt: ' + task.createdAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' +
-		(task.startedAt ? ' [startedAt: ' +  task.startedAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' : '') +
-		(task.doneAt ? ' [doneAt: ' + task.doneAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' }) + ']' : '') 
-		).join(', ');
-		dynContextIds = _.without(dynContextIds, 'tasks');
-	}
-	
-	const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-	const today = new Date();
-	const todayAsString = today.toLocaleDateString(undefined, options);
+  let tasks;
+  if (dynContextIds.includes('tasks')) {
+    tasks = Tasks.find({ contextId }, { sort: { priority: 1 } }).map(task => `[${task.priority + 1}] ${
+      task.text
+    } [status: ${task.status}]` +
+    ` [createdAt: ${task.createdAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' })}]${
+      task.startedAt ? ` [startedAt: ${task.startedAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' })}]` : ''
+    }${task.doneAt ? ` [doneAt: ${task.doneAt.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' })}]` : ''}`,
+    ).join(', ');
+    dynContextIds = _.without(dynContextIds, 'tasks');
+  }
 
-	const primaryContexts = PrimaryContexts.find({contextId, dynContextId: {$exists: false}}, { sort: { priority: 1 }}).fetch();
-	for(const id in dynContextIds) {
-		const contexts = PrimaryContexts.find({dynContextId: dynContextIds[id]}).fetch();
-		if(contexts) primaryContexts.push(...contexts);
-	}
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+  const today = new Date();
+  const todayAsString = today.toLocaleDateString(undefined, options);
 
-	const context = primaryContexts.map((context) => context.text).join('\n');
+  const primaryContexts = PrimaryContexts.find({ contextId, dynContextId: { $exists: false } }, { sort: { priority: 1 } }).fetch();
+  for (const id in dynContextIds) {
+    const contexts = PrimaryContexts.find({ dynContextId: dynContextIds[id] }).fetch();
+    if (contexts) primaryContexts.push(...contexts);
+  }
 
-	let system = 'Act as a coach. You have 30+ years of experience.\n' +
-	'Today is ' + todayAsString + '.\n' +
-	'Assume that the user is your client.\n' +
-	'Any first person pronoun is your client speaking about himself.\n' +
-	'This is all the context your client gave you:\n' +
-	context + '\n[end of context]\n' +
-	'This context is very important and must be taken into account for each reply you provide to your client.\n';
-	
-	if (tasks) system += 	'This is the list of your client current tasks:"' + tasks + '"';
+  const context = primaryContexts.map(context => context.text).join('\n');
 
-	return system;
-}
+  let system = `Act as a coach. You have 30+ years of experience.\n` +
+  `Today is ${todayAsString}.\n` +
+  `Assume that the user is your client.\n` +
+  `Any first person pronoun is your client speaking about himself.\n` +
+  `This is all the context your client gave you:\n${
+    context}\n[end of context]\n` +
+  `This context is very important and must be taken into account for each reply you provide to your client.\n`;
+
+  if (tasks) system += `This is the list of your client current tasks:"${tasks}"`;
+
+  return system;
+};
 
 Meteor.methods({
 
-	openaiGenerateText(contextId, dynContextIds, system, prompt) {
-		check(contextId, String);
-		check(dynContextIds, Array);
-		check(system, String);
-		check(prompt, String);
+  openaiGenerateText(contextId, dynContextIds, system, prompt) {
+    check(contextId, String);
+    check(dynContextIds, Array);
+    check(system, String);
+    check(prompt, String);
 
-		const apiUrl = 'https://api.openai.com/v1/chat/completions';
-		const apiKey = Meteor.user()?.openAI?.apiKey;
-		const model = Meteor.user()?.openAI?.model || 'gpt-3.5-turbo';
-		if(!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
+    const apiUrl = 'https://api.openai.com/v1/chat/completions';
+    const apiKey = Meteor.user()?.openAI?.apiKey;
+    const model = Meteor.user()?.openAI?.model || 'gpt-3.5-turbo';
+    if (!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
-		if(system === '' && contextId) system = getSystem(contextId, dynContextIds);
+    if (system === '' && contextId) system = getSystem(contextId, dynContextIds);
 
-		const pastChats = Chats.find({contextId, role: {$ne: 'meta'}}, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
-		const messages = [
-			{'role': 'system', 'content': system },
-			...pastChats,
-		];
+    const pastChats = Chats.find({ contextId, role: { $ne: 'meta' } }, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
+    const messages = [
+      { role: 'system', content: system },
+      ...pastChats,
+    ];
 
-		if(prompt) messages.push({'role': 'user', 'content': prompt});
-		
-		console.log('prompt:', prompt);
-		console.log('messages:', messages);
+    if (prompt) messages.push({ role: 'user', content: prompt });
 
-		const data = {
-			model,
-			messages,
-			temperature: 0.5,
-		};
-		const headers = {
-			'Content-Type': 'application/json',
-			'Authorization': 'Bearer ' + apiKey
-		};
+    console.log('prompt:', prompt);
+    console.log('messages:', messages);
 
-		let response;
-		try {
-			response = HTTP.post(apiUrl, {
-				headers,
-				data,
-			});
-		} catch (error) {
-			throw new Meteor.Error('openai-error', error);
-		}
+    const data = {
+      model,
+      messages,
+      temperature: 0.5,
+    };
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    };
 
-		console.log(response.data);
-		console.log(response.data.choices[0].message);
+    let response;
+    try {
+      response = HTTP.post(apiUrl, {
+        headers,
+        data,
+      });
+    } catch (error) {
+      throw new Meteor.Error('openai-error', error);
+    }
 
-		UsageStats.insert({
-			contextId,
-			userId: this.userId,
-			id: response.data.id,
-			object: response.data.object,
-			model: response.data.model,
-			usage: response.data.usage,
-			createdAt: new Date(),
-		});
+    console.log(response.data);
+    console.log(response.data.choices[0].message);
 
-		return response.data.choices[0].message.content.trim();
-	},
+    UsageStats.insert({
+      contextId,
+      userId: this.userId,
+      id: response.data.id,
+      object: response.data.object,
+      model: response.data.model,
+      usage: response.data.usage,
+      createdAt: new Date(),
+    });
+
+    return response.data.choices[0].message.content.trim();
+  },
 });
