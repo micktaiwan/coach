@@ -1,6 +1,5 @@
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
-import { DynContexts } from '../imports/api/dynamicContexts/collections';
 
 import '/imports/api/users/client/login.js';
 
@@ -14,7 +13,7 @@ const route = name => FlowRouter.route(`/${name}`, {
 FlowRouter.route('/', {
   name: 'home',
   action() {
-    if (!Meteor.userId()) return FlowRouter.go('/login');
+    if (!Meteor.userId()) { FlowRouter.go('/login'); return; }
     BlazeLayout.render('layout', { main: 'home' });
   },
 });

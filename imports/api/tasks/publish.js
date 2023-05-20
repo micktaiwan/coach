@@ -1,5 +1,6 @@
-import { Tasks } from './collections.js';
+import { Tasks } from './collections';
 
 Meteor.publish('tasks', function(contextId) {
-  return Tasks.find({contextId, userId: this.userId});
+  check(contextId, String);
+  return Tasks.find({ contextId, userId: this.userId });
 });
