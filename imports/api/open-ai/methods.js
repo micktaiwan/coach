@@ -56,7 +56,7 @@ const getPineconeSystem = async (contextId, prompt) => {
   `This is all the context your client gave you:\n${
     context.join('\n')}\n[end of context]\n` +
   `This context is very important and must be taken into account for each reply you provide to your client.\n` +
-  `Always reply in the same language as the last chat:\n`;
+  `Always reply in the same language as the last chat\n`;
 
   return system;
 };

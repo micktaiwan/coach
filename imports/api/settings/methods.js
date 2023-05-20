@@ -1,5 +1,3 @@
-import { Tasks } from '../tasks/collections.js';
-
 Meteor.methods({
   setApiKey(apiKey) {
     check(apiKey, String);
@@ -11,7 +9,7 @@ Meteor.methods({
   setModel(model) {
     check(model, String);
     if (!this.userId) throw new Meteor.Error('not-authorized');
-    
+
     Meteor.users.update(Meteor.userId(), { $set: { 'openAI.model': model } });
   },
 
@@ -24,25 +22,27 @@ Meteor.methods({
   },
 
   importTasks(contextId, tasksJSON) {
+    check(contextId, String);
     check(tasksJSON, String);
 
     try {
       const tasks = JSON.parse(tasksJSON);
-      tasks.forEach((task) => {
+      tasks.forEach(task => {
         task.createdAt = new Date(task.createdAt);
-        Meteor.call('addTask', task,contextId);
+        Meteor.call('addTask', task, contextId);
       });
     } catch (e) {
       throw new Meteor.Error(e.message);
     }
-},
+  },
 
   importPrimaryContexts(contextId, contextsJSON) {
+    check(contextId, String);
     check(contextsJSON, String);
 
     try {
       const contexts = JSON.parse(contextsJSON);
-      contexts.forEach((context) => {
+      contexts.forEach(context => {
         context.createdAt = new Date(context.createdAt);
         Meteor.call('addPrimaryContext', context, contextId);
       });
