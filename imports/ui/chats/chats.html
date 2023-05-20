@@ -13,8 +13,17 @@
       <button class="js-send-message btn btn-primary mt-1">Send</button>
     </form>
     
-    <div class="contexts">
-      Context: {{contexts}}
+    <div class="mt-5">
+      <a class="text-muted clickable" data-bs-toggle="collapse" href="#debugPinecone" role="button" aria-expanded="false" aria-controls="debugPinecone">
+        <span class="material-icons-outlined left">arrow_right</span>
+        <span class="nav-link-text">debug</span>
+      </a>
+
+      <div class="collapse" id="debugPinecone">
+        {{#each (Session 'pineconeContext')}}
+          <span class="small text-muted">{{score}}: {{text}}</span><br>
+        {{/each}}
+      </div>
     </div>
 
   </div>

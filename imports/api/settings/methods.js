@@ -15,6 +15,7 @@ Meteor.methods({
 
   fetchCollection(collectionName, query) {
     check(collectionName, String);
+    check(query, Object);
     if (!this.userId) throw new Meteor.Error('not-authorized');
     return Mongo.Collection.get(collectionName)
       .find(query, { projection: { _id: 0, contextId: 0, userId: 0 } })
