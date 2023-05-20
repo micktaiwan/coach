@@ -3,7 +3,14 @@ import { Tasks } from '../tasks/collections';
 import { PrimaryContexts } from '../primary-contexts/collections';
 import { Chats } from '../chats/collections';
 import { UsageStats } from './collections';
+import { pinecone } from '../pinecone/pinecone';
 
+
+const todayAsString = () => {
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+  const today = new Date();
+  return today.toLocaleDateString(undefined, options);
+};
 
 const getSystem = (contextId, dynContextIds) => {
   let tasks;
@@ -18,10 +25,6 @@ const getSystem = (contextId, dynContextIds) => {
     dynContextIds = _.without(dynContextIds, 'tasks');
   }
 
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-  const today = new Date();
-  const todayAsString = today.toLocaleDateString(undefined, options);
-
   const primaryContexts = PrimaryContexts.find({ contextId, dynContextId: { $exists: false } }, { sort: { priority: 1 } }).fetch();
   for (const id in dynContextIds) {
     const contexts = PrimaryContexts.find({ dynContextId: dynContextIds[id] }).fetch();
@@ -31,21 +34,37 @@ const getSystem = (contextId, dynContextIds) => {
   const context = primaryContexts.map(context => context.text).join('\n');
 
   let system = `Act as a coach. You have 30+ years of experience.\n` +
-  `Today is ${todayAsString}.\n` +
+  `Today is ${todayAsString()}.\n` +
   `Assume that the user is your client.\n` +
   `Any first person pronoun is your client speaking about himself.\n` +
   `This is all the context your client gave you:\n${
     context}\n[end of context]\n` +
-  `This context is very important and must be taken into account for each reply you provide to your client.\n`;
+  `This context is very important and must be taken into account for each reply you provide to your client.\n` +
+  `Always reply in the same language as the last chat:\n`;
 
   if (tasks) system += `This is the list of your client current tasks:"${tasks}"`;
 
   return system;
 };
 
+const getPineconeSystem = async (contextId, prompt) => {
+  const context = await pinecone.getContext(contextId, prompt);
+  const system = `Act as a coach. You have 30+ years of experience.\n` +
+  `Today is ${todayAsString()}.\n` +
+  `Assume that the user is your client.\n` +
+  `Any first person pronoun is your client speaking about himself.\n` +
+  `This is all the context your client gave you:\n${
+    context.join('\n')}\n[end of context]\n` +
+  `This context is very important and must be taken into account for each reply you provide to your client.\n` +
+  `Always reply in the same language as the last chat:\n`;
+
+  return system;
+};
+
+
 Meteor.methods({
 
-  openaiGenerateText(contextId, dynContextIds, system, prompt) {
+  async openaiGenerateText(contextId, dynContextIds, system, prompt) {
     check(contextId, String);
     check(dynContextIds, Array);
     check(system, String);
@@ -56,7 +75,7 @@ Meteor.methods({
     const model = Meteor.user()?.openAI?.model || 'gpt-3.5-turbo';
     if (!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
-    if (system === '' && contextId) system = getSystem(contextId, dynContextIds);
+    if (system === '' && contextId) system = await getPineconeSystem(contextId, prompt);
 
     const pastChats = Chats.find({ contextId, role: { $ne: 'meta' } }, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
     const messages = [
@@ -104,4 +123,35 @@ Meteor.methods({
 
     return response.data.choices[0].message.content.trim();
   },
+
+  openaiEmbed(input) {
+    check(input, String);
+
+    const url = 'https://api.openai.com/v1/embeddings';
+    const apiKey = Meteor.user()?.openAI?.apiKey;
+    if (!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
+
+    const data = {
+      model: 'text-embedding-ada-002',
+      input,
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    };
+
+    let response;
+    try {
+      response = HTTP.post(url, {
+        headers,
+        data,
+      });
+    } catch (error) {
+      throw new Meteor.Error('openai-error', error);
+    }
+
+    return response.data;
+  },
+
 });

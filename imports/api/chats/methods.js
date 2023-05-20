@@ -2,27 +2,25 @@ import { Chats } from './collections';
 import { pinecone } from '../pinecone/pinecone';
 
 Meteor.methods({
-  addChat(contextId, role, message) {
+  addChat(contextId, role, content) {
     check(contextId, String);
     check(role, String); // 'user', 'assistant', 'meta'
-    check(message, String);
+    check(content, String);
 
     if (!this.userId) throw new Meteor.Error('not-authorized');
     if (!contextId) throw new Meteor.Error('no-context-id');
 
-    message = message.replace(/\n/g, '<br>');
+    content = content.replace(/\n/g, '<br>');
 
-    Chats.insert({
+    const chat = {
       userId: this.userId,
       contextId,
       role,
-      content: message,
+      content,
       createdAt: new Date(),
-    });
+    };
 
-    // Pinecone
-    const id = pinecone.addChat(contextId, role, message);
-    console.log('Pinecone chat id:', id);
+    Chats.insert(chat);
   },
 
   deleteChat(chatId) {

@@ -63,7 +63,6 @@ Template.chats.events({
           }
           Session.set('loadingAnswer', false);
         });
-
         form.reset();
       }
     });
