@@ -7,7 +7,7 @@ Meteor.methods({
 
     if (!this.userId) throw new Meteor.Error('not-authorized');
 
-    DynContexts.insert({
+    return DynContexts.insert({
       name,
       contextId,
       createdAt: new Date(),
