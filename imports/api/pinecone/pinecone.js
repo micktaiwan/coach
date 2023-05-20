@@ -24,6 +24,7 @@ export const pinecone = {
   // - contextId (namespace)
   // - type (so we can associate an id with a collection later if needed)
   addContext(context) {
+    console.log('pinecone.addContext:', context);
     Meteor.call('openaiEmbed', context.text, (error, data) => {
       if (error) console.error(error);
       else {
@@ -49,9 +50,9 @@ export const pinecone = {
     console.log('namespace:', namespace);
     console.log('message:', message);
     const data = await Meteor.callAsync('openaiEmbed', message);
-    console.log('data:', data);
+    // console.log('data:', data);
     const queryRequest = {
-      topK: 10,
+      topK: 50,
       vector: data.data[0].embedding,
       namespace,
       includeMetadata: true,
@@ -59,7 +60,7 @@ export const pinecone = {
     const index = client.Index(indexName); // eslint-disable-line new-cap
     const response = await index.query({ queryRequest }).catch(console.error);
     if (!response?.matches) return [];
-    console.log('contexts:', response.matches.map(r => ({ text: r.metadata.text, score: r.score })));
+    // console.log('contexts:', response.matches.map(r => ({ text: r.metadata.text, score: r.score })));
     return response.matches.map(r => r.metadata.text);
   },
 
@@ -69,13 +70,16 @@ Meteor.methods({
   pineconePopulate() {
     PrimaryContexts.find().forEach(context => {
       context = _.omit(context, 'priority');
-      console.log('populating context:', context);
-      // pinecone.addContext(context);
+      context.type = 'primary';
+      // console.log('populating context:', context);
+      pinecone.addContext(context);
     });
     Tasks.find().forEach(task => {
       task = _.omit(task, 'status', 'priority');
-      console.log('populating tasks:', task);
-      // pinecone.addContext(task);
+      task.text = `Task: ${task.text}`;
+      task.type = 'task';
+      // console.log('populating tasks:', task);
+      pinecone.addContext(task);
     });
   },
 });

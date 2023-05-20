@@ -1,7 +1,9 @@
 import { PrimaryContexts } from './collections';
+import { pinecone } from '../pinecone/pinecone';
 
 Meteor.methods({
   addPrimaryContext(context, contextId) {
+    if (!this.userId) throw new Meteor.Error('not-authorized');
     check(context, {
       text: String,
       createdAt: Match.Optional(Date),
@@ -11,7 +13,7 @@ Meteor.methods({
     });
     check(contextId, String);
 
-    PrimaryContexts.insert({
+    const p = {
       userId: this.userId,
       contextId,
       text: context.text,
@@ -19,7 +21,18 @@ Meteor.methods({
       status: context.status || 'open',
       priority: context.priority || PrimaryContexts.find({ contextId }).count(),
       dynContextId: context.dynContextId,
+    };
+
+    const _id = PrimaryContexts.insert(p);
+
+    pinecone.addContext({
+      _id,
+      contextId,
+      text: context.text,
+      type: 'primary',
     });
+
+    return _id;
   },
 
   deleteContext(contextId) {
