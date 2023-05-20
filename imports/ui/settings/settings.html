@@ -27,17 +27,26 @@
       Please select a environment to edit import/export settings.
     </p>
   {{else}}
-    <h3>Exports</h3>
-    <button class="js-export-tasks btn btn-primary">Export Tasks</button>
-    <button class="js-export-contexts btn btn-primary">Export Primary Contexts</button>
-    <h3>Imports</h3>
-    <h4>Tasks</h4>
-    <p>Paste JSON</p>
-    <textarea id="import-tasks" rows="6" cols="100"></textarea>
-    <button class="js-import-tasks btn btn-primary">Import Tasks</button>
-    <h4>Primary Contexts</h4>
-    <p>Paste JSON</p>
-    <textarea id="import-primary-contexts" rows="6" cols="100"></textarea>
-    <button class="js-import-primary-contexts btn btn-primary">Import Primary Contexts</button>
+    <!-- Collapsed by default -->
+    <div class="mt-5">
+      <a class="clickable" data-bs-toggle="collapse" href="#collapse-settings" role="button" aria-expanded="false" aria-controls="collapse-settings">
+        <span class="material-icons-outlined left">arrow_right</span>
+        <span class="nav-link-text">Open Import/Export</span>
+      </a>
+      <div class="collapse" id="collapse-settings">
+        <h3>Exports</h3>
+        <button class="js-export-tasks btn btn-primary">Export Tasks</button>
+        <button class="js-export-contexts btn btn-primary">Export Primary Contexts</button>
+        <h3>Imports</h3>
+        <h4>Tasks</h4>
+        <p>Paste JSON</p>
+        <textarea id="import-tasks" rows="6" cols="100"></textarea>
+        <button class="js-import-tasks btn btn-primary">Import Tasks</button>
+        <h4>Primary Contexts</h4>
+        <p>Paste JSON</p>
+        <textarea id="import-primary-contexts" rows="6" cols="100"></textarea>
+        <button class="js-import-primary-contexts btn btn-primary">Import Primary Contexts</button>
+      </div>
+    </div>
   {{/unless}}
 </template>
