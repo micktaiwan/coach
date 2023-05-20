@@ -60,8 +60,7 @@ export const pinecone = {
     const index = client.Index(indexName); // eslint-disable-line new-cap
     const response = await index.query({ queryRequest }).catch(console.error);
     if (!response?.matches) return [];
-    // console.log('contexts:', response.matches.map(r => ({ text: r.metadata.text, score: r.score })));
-    return response.matches.map(r => r.metadata.text);
+    return response.matches.map(r => ({ text: r.metadata.text, score: Math.round(r.score * 100) / 100 }));
   },
 
   remove(id, namespace) {

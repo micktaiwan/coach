@@ -2,7 +2,6 @@ import './chats.html';
 
 import { Chats } from '../../api/chats/collections';
 import { DynContexts } from '../../api/dynamicContexts/collections';
-import { getDynContexts } from '../helpers';
 
 let handle;
 const scrollToBottom = () => {
@@ -29,15 +28,6 @@ Template.chats.helpers({
   chats() {
     return Chats.find({}, { sort: { createdAt: 1 } });
   },
-  contexts() {
-    const contexts = ['Main'];
-    contexts.push(...getDynContexts());
-    return contexts.map(context => {
-      if (context === 'Main') return 'Main';
-      if (context === 'tasks') return 'Tasks';
-      return DynContexts.findOne(context).name;
-    }).join(', ');
-  },
 });
 
 Template.chats.events({
@@ -53,13 +43,14 @@ Template.chats.events({
         Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
         Session.set('loadingAnswer', false);
       } else {
-        Meteor.call('openaiGenerateText', Session.get('contextId'), getDynContexts(), '', '', (err2, res) => {
+        Meteor.call('openaiGenerateText', Session.get('contextId'), '', '', (err2, res) => {
           if (err2) {
             console.log(err2);
             if (typeof err2.reason === 'string') Meteor.call('addChat', Session.get('contextId'), 'meta', err2.reason);
             else Meteor.call('addChat', Session.get('contextId'), 'meta', err2.reason.response.data.error.message);
           } else {
-            Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
+            Meteor.call('addChat', Session.get('contextId'), 'assistant', res.response);
+            Session.set('pineconeContext', res.context);
           }
           Session.set('loadingAnswer', false);
         });
@@ -90,11 +81,11 @@ Template.chats.events({
     const message = 'Can you please provide additional evidence or examples to support your previous statement and further strengthen your argument?';
     Session.set('loadingAnswer', true);
     Meteor.call('addChat', Session.get('contextId'), 'user', message, () => {
-      Meteor.call('openaiGenerateText', Session.get('contextId'), getDynContexts(), '', '', (err, res) => {
+      Meteor.call('openaiGenerateText', Session.get('contextId'), '', '', (err, res) => {
         if (err) {
           console.log(err);
           Meteor.call('addChat', Session.get('contextId'), 'meta', err.reason.response.data.error.message);
-        } else Meteor.call('addChat', Session.get('contextId'), 'assistant', res);
+        } else Meteor.call('addChat', Session.get('contextId'), 'assistant', res.response);
         Session.set('loadingAnswer', false);
       });
     });

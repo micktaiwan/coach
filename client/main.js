@@ -45,6 +45,7 @@ Template.contextSelect.events({
       return;
     }
     Session.set('contextId', contextId);
+    Session.set('pineconeContext', []);
   },
 });
 
