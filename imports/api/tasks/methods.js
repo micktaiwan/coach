@@ -33,6 +33,8 @@ Meteor.methods({
 
   deleteTask(taskId) {
     check(taskId, String);
+    const task = Tasks.findOne(taskId);
+    pinecone.remove(taskId, task.contextId);
     Tasks.remove(taskId);
   },
 
@@ -45,6 +47,8 @@ Meteor.methods({
   editTaskText(taskId, text) {
     check(taskId, String);
     check(text, String);
+    const task = Tasks.findOne(taskId);
+    pinecone.update(taskId, task.contextId, text, 'task');
     Tasks.update(taskId, { $set: { text } });
   },
 
