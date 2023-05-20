@@ -58,7 +58,7 @@ Meteor.methods({
     const data = {
       model,
       messages,
-      temperature: 0.5,
+      temperature: 0,
     };
     const headers = {
       'Content-Type': 'application/json',
