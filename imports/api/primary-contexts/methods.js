@@ -35,9 +35,11 @@ Meteor.methods({
     return _id;
   },
 
-  deleteContext(contextId) {
-    check(contextId, String);
-    PrimaryContexts.remove(contextId);
+  deleteContext(_id) {
+    check(_id, String);
+    const context = PrimaryContexts.findOne(_id);
+    pinecone.remove(_id, context.contextId);
+    return PrimaryContexts.remove(_id);
   },
 
   updateContext(contextId, data) {
@@ -49,6 +51,8 @@ Meteor.methods({
   editContextText(contextId, text) {
     check(contextId, String);
     check(text, String);
+    const context = PrimaryContexts.findOne(contextId);
+    pinecone.update(contextId, context.contextId, text, 'primary');
     PrimaryContexts.update(contextId, { $set: { text } });
   },
 
