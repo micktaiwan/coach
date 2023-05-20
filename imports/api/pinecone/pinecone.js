@@ -64,6 +64,16 @@ export const pinecone = {
     return response.matches.map(r => r.metadata.text);
   },
 
+  remove(id, namespace) {
+    const index = client.Index(indexName); // eslint-disable-line new-cap
+    index.delete1({ ids: [id], namespace }).catch(console.error);
+  },
+
+  update(_id, namespace, text, type) {
+    pinecone.remove(_id, namespace);
+    pinecone.addContext({ _id, contextId: namespace, text, type });
+  },
+
 };
 
 Meteor.methods({
