@@ -5,12 +5,13 @@ import { Chats } from '../chats/collections';
 import { UsageStats } from './collections';
 import { pinecone } from '../pinecone/pinecone';
 
-
 const todayAsString = () => {
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
   const today = new Date();
   return today.toLocaleDateString(undefined, options);
 };
+
+const { settings } = Meteor;
 
 const getPineconeSystem = async (contextId, prompt) => {
   const context = await pinecone.getContext(contextId, prompt);
@@ -35,9 +36,10 @@ Meteor.methods({
     check(system, String);
     check(prompt, String);
 
+    const user = Meteor.user();
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
-    const apiKey = Meteor.user()?.openAI?.apiKey;
-    const model = Meteor.user()?.openAI?.model || 'gpt-3.5-turbo';
+    const apiKey = user?.openAI?.apiKey || settings.openAI.apiKey;
+    const model = user?.openAI?.model || 'gpt-3.5-turbo';
     if (!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
     const pastChats = Chats.find({ contextId, role: { $ne: 'meta' } }, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
@@ -53,7 +55,7 @@ Meteor.methods({
     if (prompt) messages.push({ role: 'user', content: prompt });
 
     console.log('prompt:', lastPrompt);
-    console.log('messages:', messages);
+    // console.log('messages:', messages);
 
     const data = {
       model,
@@ -88,14 +90,14 @@ Meteor.methods({
       createdAt: new Date(),
     });
 
-    return { response: response.data.choices[0].message.content.trim(), context };
+    return { response: response.data.choices[0].message.content.trim(), context, usage: response.data.usage };
   },
 
   openaiEmbed(input) {
     check(input, String);
 
     const url = 'https://api.openai.com/v1/embeddings';
-    const apiKey = Meteor.user()?.openAI?.apiKey;
+    const apiKey = Meteor.user()?.openAI?.apiKey || settings.openAI.apiKey;
     if (!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
     const data = {

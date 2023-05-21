@@ -4,6 +4,9 @@ import { Meteor } from 'meteor/meteor';
 
 import './head';
 
+// server routes
+import './routes';
+
 // tasks
 import '../imports/api/tasks/methods';
 import '../imports/api/tasks/publish';
@@ -43,8 +46,9 @@ import '../imports/api/open-ai/collections';
 // pinecone
 import '../imports/api/pinecone/pinecone';
 
+// Slack
+import '../imports/api/slack/methods';
+
 Meteor.startup(() => {
   // code to run on server at startup
-  Tasks.update({ userId: { $exists: false } }, { $set: { userId: 'roipiTkx5MQqnbQo7' } }, { multi: true });
 });
-
