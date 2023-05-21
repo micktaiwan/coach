@@ -42,7 +42,7 @@ Meteor.methods({
     const model = user?.openAI?.model || 'gpt-3.5-turbo';
     if (!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
-    const pastChats = Chats.find({ contextId, role: { $ne: 'meta' } }, { sort: { createdAt: 1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch();
+    const pastChats = Chats.find({ contextId, role: { $ne: 'meta' } }, { limit: 20, sort: { createdAt: -1 }, projection: { _id: 0, role: 1, content: 1 } }).fetch().reverse();
     const lastPrompt = prompt || pastChats[pastChats.length - 1].content;
     let context;
     if (system === '' && contextId) ({ system, context } = await getPineconeSystem(contextId, lastPrompt));
