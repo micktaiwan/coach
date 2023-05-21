@@ -24,7 +24,7 @@ export const pinecone = {
   // - contextId (namespace)
   // - type (so we can associate an id with a collection later if needed)
   addContext(context) {
-    console.log('pinecone.addContext:', context);
+    // console.log('pinecone.addContext:', context);
     Meteor.call('openaiEmbed', context.text, (error, data) => {
       if (error) console.error(error);
       else {

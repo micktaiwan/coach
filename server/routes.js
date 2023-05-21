@@ -8,7 +8,7 @@ WebApp.connectHandlers.use('/slack', (req, res, next) => {
     res.writeHead(200);
     res.end('Hello, server route!');
   } else if (req.method === 'POST') {
-    console.log('POST request received!', JSON.stringify(req.headers));
+    console.log('==== POST request received!', JSON.stringify(req.headers));
     let body = '';
     req.on('data', data => {
       body += data;
