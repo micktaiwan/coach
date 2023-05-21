@@ -47,8 +47,8 @@ export const pinecone = {
   },
 
   async getContext(namespace, message) {
-    console.log('namespace:', namespace);
-    console.log('message:', message);
+    // console.log('getContext namespace:', namespace);
+    // console.log('getContext message:', message);
     const data = await Meteor.callAsync('openaiEmbed', message);
     // console.log('data:', data);
     const queryRequest = {
