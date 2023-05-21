@@ -56,11 +56,12 @@ Meteor.methods({
 
     console.log('prompt:', lastPrompt);
     // console.log('messages:', messages);
+    // console.log('context:', context);
 
     const data = {
       model,
       messages,
-      temperature: 0,
+      temperature: 0.9,
     };
     const headers = {
       'Content-Type': 'application/json',
