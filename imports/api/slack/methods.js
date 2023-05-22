@@ -1,5 +1,31 @@
+import axios from 'axios';
 import { pinecone } from '../pinecone/pinecone';
 import { Chats } from '../chats/collections';
+
+const slackUserNames = {};
+
+async function getUserName(userId) {
+  if (slackUserNames[userId]) console.log('cached slack user name:', slackUserNames[userId]);
+  else console.log('getting slack user name for:', userId);
+  if (slackUserNames[userId]) return slackUserNames[userId];
+
+  try {
+    const response = await axios.get(`https://slack.com/api/users.info?user=${userId}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        Authorization: `Bearer ${Meteor.settings.slack.botToken}`,
+      },
+    });
+
+    if (!response.data.ok) return userId;
+
+    slackUserNames[userId] = response.data.user.name;
+    return response.data.user.name;
+  } catch (error) {
+    console.error('error getting slack user name:', error);
+    return userId;
+  }
+}
 
 Meteor.methods({
   sendSlackMessage(message) {
@@ -17,10 +43,13 @@ Meteor.methods({
 
   async processSlackMessage(postData) {
     const { user, text } = postData.event;
-    const receivedMessage = `${user}: ${text}`;
-    // console.log('postData:', postData);
+    // console.log('user:', user);
+    const userName = await getUserName(user);
+    const receivedMessage = `${userName}: ${text}`;
+    console.log('postData:', postData);
     console.log('received slack message:', receivedMessage);
-    if (postData.subtype === 'huddle_thread') return console.log('message announcing a huddle thread, ignoring...');
+    if (postData.subtype === 'huddle_thread') return console.log('huddle_thread, ignoring...');
+    if (postData.subtype === 'bot_add') return console.log('bot_add, ignoring...');
     if (user === 'USLACKBOT') return console.log('message from USLACKBOT, ignoring...');
 
     const context = await pinecone.getContext('slack', text);
@@ -30,7 +59,7 @@ Meteor.methods({
 
     const todayString = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
     const system = `You are an AI assistant in a Slack channel with several people. Your name is Georges.\n` +
-    `Very important: if the last chat message is not directly addressed to you, then you will only respond 'ok'.\n` +
+    `If the last chat message is not directly addressed to you, then you will only respond 'ok'.\n` +
     `Today is ${todayString}.\n` +
     `Never prefix your message by your name.\n` +
     `Here are some past conversation bits related to the last user prompt:\n${pineconeContext}`;
