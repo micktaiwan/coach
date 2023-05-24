@@ -43,11 +43,11 @@ Meteor.methods({
 
   async processSlackMessage(postData) {
     const { user, text } = postData.event;
-    // console.log('user:', user);
     const userName = await getUserName(user);
     const receivedMessage = `${userName}: ${text}`;
     console.log('postData:', postData);
     console.log('received slack message:', receivedMessage);
+    if (postData.event?.thread_ts) return console.log('msg in thread, ignoring...');
     if (postData.subtype === 'huddle_thread') return console.log('huddle_thread, ignoring...');
     if (postData.subtype === 'bot_add') return console.log('bot_add, ignoring...');
     if (user === 'USLACKBOT') return console.log('message from USLACKBOT, ignoring...');
