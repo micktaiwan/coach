@@ -30,15 +30,13 @@ async function getUserName(userId) {
 Meteor.methods({
   sendSlackMessage(message) {
     check(message, String);
-    const webhook = 'https://hooks.slack.com/services/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';
+    const { webhook } = Meteor.settings.slack;
     const data = {
       text: message,
       channel: '#georges',
     };
 
-    HTTP.post(webhook, {
-      data,
-    });
+    HTTP.post(webhook, { data });
   },
 
   async processSlackMessage(postData) {
