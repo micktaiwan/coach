@@ -40,15 +40,23 @@ Meteor.methods({
   },
 
   async processSlackMessage(postData) {
+    check(postData, Match.ObjectIncluding({
+      event: Match.Optional(Match.ObjectIncluding({
+        text: String,
+        user: String,
+        thread_ts: Match.Optional(String),
+      })),
+      subtype: Match.Optional(String),
+    }));
     const { user, text } = postData.event;
     const userName = await getUserName(user);
     const receivedMessage = `${userName}: ${text}`;
     console.log('postData:', postData);
-    if (!postData.event?.text.includes('<@U058K74EF2S>')) return console.log('not summoned, ignoring...');
-    if (postData.event?.thread_ts) return console.log('msg in thread, ignoring...');
-    if (postData.subtype === 'huddle_thread') return console.log('huddle_thread, ignoring...');
-    if (postData.subtype === 'bot_add') return console.log('bot_add, ignoring...');
-    if (user === 'USLACKBOT') return console.log('message from USLACKBOT, ignoring...');
+    if (!postData.event?.text.includes('<@U058K74EF2S>')) { console.log('not summoned, ignoring...'); return; }
+    if (postData.event?.thread_ts) { console.log('msg in thread, ignoring...'); return; }
+    if (postData.subtype === 'huddle_thread') { console.log('huddle_thread, ignoring...'); return; }
+    if (postData.subtype === 'bot_add') { console.log('bot_add, ignoring...'); return; }
+    if (user === 'USLACKBOT') { console.log('message from USLACKBOT, ignoring...'); return; }
 
     const context = await pinecone.getContext('slack', text);
     const pineconeContext = context.map(c => c.text).join('\n');
