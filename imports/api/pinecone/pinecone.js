@@ -15,7 +15,7 @@ else {
   });
 }
 
-export const indexName = 'coach';
+export const indexName = 'coach-index';
 export const pinecone = {
   client,
   // input: context with
