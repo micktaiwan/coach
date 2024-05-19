@@ -38,7 +38,7 @@ Meteor.methods({
 
     const user = Meteor.user();
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
-    const apiKey = user?.openAI?.apiKey || settings.openAI.apiKey;
+    const apiKey = user?.openAI?.apiKey || settings.openAI?.apiKey;
     const model = user?.openAI?.model || 'gpt-3.5-turbo';
     if (!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
@@ -75,6 +75,7 @@ Meteor.methods({
         data,
       });
     } catch (error) {
+      console.error('openai-error:', error);
       throw new Meteor.Error('openai-error', error);
     }
 
@@ -102,7 +103,7 @@ Meteor.methods({
     if (!apiKey) throw new Meteor.Error('no-api-key', 'No OpenAI API key found');
 
     const data = {
-      model: 'text-embedding-ada-002',
+      model: 'text-embedding-3-small',
       input,
     };
 
@@ -113,11 +114,13 @@ Meteor.methods({
 
     let response;
     try {
+      // console.log('openaiEmbed call:', { headers, data });
       response = HTTP.post(url, {
         headers,
         data,
       });
     } catch (error) {
+      console.error('openaiEmbed Error:', error);
       throw new Meteor.Error('openai-error', error);
     }
 
