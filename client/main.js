@@ -40,7 +40,10 @@ Template.contextSelect.events({
       if (!name) return;
       Meteor.call('addContext', name, (err, _id) => {
         if (err) Meteor.call('addChat', Session.get('contextId'), 'meta', err.message);
-        else Session.set('contextId', _id);
+        else {
+          Session.set('contextId', _id);
+          // add context to local storage
+        }
       });
       return;
     }

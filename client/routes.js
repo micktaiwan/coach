@@ -39,3 +39,4 @@ FlowRouter.route('/login', {
 route('contexts');
 route('tasks');
 route('settings');
+route('admin');
